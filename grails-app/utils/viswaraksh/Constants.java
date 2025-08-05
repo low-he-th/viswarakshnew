@@ -10,6 +10,8 @@ public class Constants {
     public static String MAIN_APPLICATION_FOLDER = "viswaraksh";
     public static String CONFIG_APPLICATION_FOLDER = ".viswaraksh";
     public static String PRODUCT = "Product";
+    public static String ADMIN_DEMO_USER = "9876543211";
+    public static String DEMO_OTP = "11111";
 
     public Constants(String configFile) {
         String path = System.getProperty("user.home") + File.separator + CONFIG_APPLICATION_FOLDER;
