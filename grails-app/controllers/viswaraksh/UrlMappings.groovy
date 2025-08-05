@@ -15,6 +15,14 @@ class UrlMappings {
         "404"(view:'/notFound')
 
 
+        // dashbaord
         "/"(controller: "dashboard", action: "dashboard")
+
+
+        // dashbaord
+        "/admin"(controller: "admin", action: "adminPanel")
+        "/add/product"(controller: "admin", action: "addAndEditProduct")
+        "/delete/product"(controller: "admin", action: "deleteProduct")
+        "/get/product"(controller: "admin", action: "getProduct")
     }
 }
