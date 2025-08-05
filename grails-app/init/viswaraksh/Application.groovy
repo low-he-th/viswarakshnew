@@ -1,4 +1,4 @@
-package inplace
+package viswaraksh
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
