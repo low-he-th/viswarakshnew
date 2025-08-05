@@ -2,7 +2,7 @@
 grails:
     profile: web
     codegen:
-        defaultPackage: inplace
+        defaultPackage: viswaraksh
     gorm:
         reactor:
             # Whether to translate GORM events into Reactor events
