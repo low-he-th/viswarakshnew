@@ -14,36 +14,17 @@ info:
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
 spring:
-    jmx:
-        unique-names: true
     main:
         banner-mode: "off"
     groovy:
         template:
             check-template-location: false
-    devtools:
-        restart:
-            additional-exclude:
-                - '*.gsp'
-                - '**/*.gsp'
-                - '*.gson'
-                - '**/*.gson'
-                - 'logback.groovy'
-                - '*.properties'
-environments:
-    development:
-        management:
-            endpoints:
-                enabled-by-default: true
-                web:
-                    base-path: '/actuator'
-                    exposure:
-                        include: '*'
-    production:
-        management:
-            endpoints:
-                enabled-by-default: false
 
+# Spring Actuator Endpoints are Disabled by Default
+endpoints:
+    enabled: false
+    jmx:
+        enabled: true
 ---
 grails:
     mime:
@@ -62,29 +43,35 @@ grails:
             csv: text/csv
             form: application/x-www-form-urlencoded
             html:
-              - text/html
-              - application/xhtml+xml
+                - text/html
+                - application/xhtml+xml
             js: text/javascript
             json:
-              - application/json
-              - text/json
+                - application/json
+                - text/json
             multipartForm: multipart/form-data
             pdf: application/pdf
             rss: application/rss+xml
             text: text/plain
             hal:
-              - application/hal+json
-              - application/hal+xml
+                - application/hal+json
+                - application/hal+xml
             xml:
-              - text/xml
-              - application/xml
+                - text/xml
+                - application/xml
     urlmapping:
         cache:
             maxsize: 1000
     controllers:
         defaultScope: singleton
+        upload:
+            maxFileSize: 100000000
+            maxRequestSize: 100000000
     converters:
         encoding: UTF-8
+        json:
+            default:
+                deep: true
     views:
         default:
             codec: html
@@ -93,51 +80,46 @@ grails:
             htmlcodec: xml
             codecs:
                 expression: html
-                scriptlet: html
+                scriptlets: html
                 taglib: none
                 staticparts: none
+    plugin:
+        springwebsocket:
+            allowedOrigins: "*"
+endpoints:
+    jmx:
+        unique-names: true
 
 ---
-hibernate:
-    cache:
-        queries: false
-        use_second_level_cache: false
-        use_query_cache: false
-dataSource:
-    pooled: true
-    jmxExport: true
-    driverClassName: org.h2.Driver
-    username: sa
-    password: ''
+server:
+    servlet:
+        context-path: ""
+    port: 9090
+    tomcat:
+        max-http-form-post-size: 10000000
 
+---
+grails:
+    mongodb:
+        port: 27017
+        username: ""
+        password: ""
+        databaseName: "viswaraksh"
+        default:
+            mapping:
+                version: false
+                '*':
+                    reference: true
 environments:
     development:
-        dataSource:
-            dbCreate: create-drop
-            url: jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+        grails:
+            mongodb:
+                host: localhost
     test:
-        dataSource:
-            dbCreate: update
-            url: jdbc:h2:mem:testDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+        grails:
+            mongodb:
+                host: localhost
     production:
-        dataSource:
-            dbCreate: none
-            url: jdbc:h2:./prodDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
-            properties:
-                jmxEnabled: true
-                initialSize: 5
-                maxActive: 50
-                minIdle: 5
-                maxIdle: 25
-                maxWait: 10000
-                maxAge: 600000
-                timeBetweenEvictionRunsMillis: 5000
-                minEvictableIdleTimeMillis: 60000
-                validationQuery: SELECT 1
-                validationQueryTimeout: 3
-                validationInterval: 15000
-                testOnBorrow: true
-                testWhileIdle: true
-                testOnReturn: false
-                jdbcInterceptors: ConnectionState
-                defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+        grails:
+            mongodb:
+                host: localhost
