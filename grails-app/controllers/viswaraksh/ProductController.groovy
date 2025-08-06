@@ -1,5 +1,6 @@
 package viswaraksh
 
+import grails.converters.JSON
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.web.json.JSONObject
 import products.Product
@@ -21,12 +22,11 @@ class ProductController {
             product.setWeight(params.weight)
             product.setIngredients(params.ingredients)
             product.setBenefits(params.benefits)
-            product.setExpiry(params.expiry)
             def offer = params.int("offer")
             product.setOffer(offer)
             def stock = params.int("stock")
             product.setStock(stock)
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy")
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
             if (params.mfgDate != null) {
                 product.setMfgDate(formatter.parse(params.mfgDate))
             }
@@ -61,7 +61,7 @@ class ProductController {
                 product.setOffer(offer)
                 def stock = params.int("stock")
                 product.setStock(stock)
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy")
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
                 if (params.mfgDate != null) {
                     product.setMfgDate(formatter.parse(params.mfgDate))
                 }
@@ -81,60 +81,145 @@ class ProductController {
         }
     }
 
+//    def getProducts() {
+//        GrailsParameterMap parameterMap = getParams()
+//        String searchTerm = parameterMap.get("search[value]")
+//        String orderColumnId = parameterMap.get("order[0][column]")
+//        String orderDir = parameterMap.get("order[0][dir]")
+//        searchTerm = searchTerm.trim()
+//
+//        //for sorting
+//        String orderColumn = "id"
+//        switch (orderColumnId) {
+//            case '1':
+//                orderColumn = "id"
+//                break;
+//            case '2':
+//                orderColumn = "name"
+//                break;
+//            case '3':
+//                orderColumn = "benefits"
+//                break;
+//            default:
+//                orderColumn = "id"
+//                break;
+//        }
+//
+//        def reports
+//        def reportsCriteria = Product.createCriteria()
+//        //for searching
+//        if (searchTerm != "") {
+//            reports = reportsCriteria.list(max: params.length, offset: params.start) {
+//                or {
+//                    ilike('name', "%" + searchTerm + "%")
+//                    ilike('description', "%" + searchTerm + "%")
+//                    ilike('weight', "%" + searchTerm + "%")
+//                }
+//                eq('deleted', false)
+//                order(orderColumn, orderDir)
+//            }
+//        } else {
+//            reports = reportsCriteria.list(max: params.length, offset: params.start) {
+//                and {
+//                    eq('deleted', false)
+//                    order(orderColumn, orderDir)
+//                }
+//            }
+//        }
+//
+//        def recordsTotal = reports.totalCount
+//        JSONObject jsonObject = new JSONObject()
+//        jsonObject.put("draw", params.draw)
+//        jsonObject.put("recordsTotal", recordsTotal)
+//        jsonObject.put("recordsFiltered", recordsTotal)
+//        jsonObject.put("data", reports)
+//        respond jsonObject, formats: ['json']
+//    }
+
+
     def getProducts() {
         GrailsParameterMap parameterMap = getParams()
-        String searchTerm = parameterMap.get("search[value]")
-        String orderColumnId = parameterMap.get("order[0][column]")
-        String orderDir = parameterMap.get("order[0][dir]")
+        String searchTerm = parameterMap.get("search[value]") ?: ""
+        String orderColumnId = parameterMap.get("order[0][column]") ?: "1"
+        String orderDir = parameterMap.get("order[0][dir]") ?: "desc"
+        int max = parameterMap.int("length") ?: 10
+        int offset = parameterMap.int("start") ?: 0
+        int draw = parameterMap.int("draw") ?: 1
+
         searchTerm = searchTerm.trim()
 
-        //for sorting
-        String orderColumn = "id"
+        // Determine the order column
+        String orderColumn
         switch (orderColumnId) {
-            case '1':
+            case "1":
                 orderColumn = "id"
-                break;
-            case '2':
+                break
+            case "2":
                 orderColumn = "name"
-                break;
-            case '3':
-                orderColumn = "benefits"
-                break;
+                break
+            case "3":
+                orderColumn = "price"
+                break
+            case "4":
+                orderColumn = "stock"
+                break
             default:
                 orderColumn = "id"
-                break;
         }
 
-        def reports
-        def reportsCriteria = Product.createCriteria()
-        //for searching
-        if (searchTerm != "") {
-            reports = reportsCriteria.list(max: params.length, offset: params.start) {
+        def productList
+        def criteria = Product.createCriteria()
+
+        if (searchTerm) {
+            productList = criteria.list(max: max, offset: offset) {
                 or {
-                    ilike('name', "%" + searchTerm + "%")
-                    ilike('description', "%" + searchTerm + "%")
-                    ilike('weight', "%" + searchTerm + "%")
+                    ilike("name", "%${searchTerm}%")
+                    ilike("description", "%${searchTerm}%")
+                    ilike("weight", "%${searchTerm}%")
                 }
-                eq('deleted', false)
+                eq("deleted", false)
                 order(orderColumn, orderDir)
             }
         } else {
-            reports = reportsCriteria.list(max: params.length, offset: params.start) {
-                and {
-                    eq('deleted', false)
-                    order(orderColumn, orderDir)
-                }
+            productList = criteria.list(max: max, offset: offset) {
+                eq("deleted", false)
+                order(orderColumn, orderDir)
             }
         }
 
-        def recordsTotal = reports.totalCount
-        JSONObject jsonObject = new JSONObject()
-        jsonObject.put("draw", params.draw)
-        jsonObject.put("recordsTotal", recordsTotal)
-        jsonObject.put("recordsFiltered", recordsTotal)
-        jsonObject.put("data", reports)
-        respond jsonObject, formats: ['json']
+        // Prepare lightweight JSON list to return
+        def productData = productList.collect { product ->
+            [
+                    id         : product.id,
+                    name       : product.name,
+                    description: product.description ?: "NA",
+                    price      : product.price ?: 0,
+                    weight     : product.weight ?: "NA",
+                    stock      : product.stock ?: 0,
+                    image      : product.image ?: "/images/default.png",
+                    ingredients: product.ingredients ?: "NA",
+                    benefits   : product.benefits ?: "NA",
+                    mfgDate    : product.mfgDate ?: "NA",
+                    expiry     : product.expiry ?: "NA",
+                    offer      : product.offer ?: 0,
+                    dateCreated: product.dateCreated ?: "NA",
+                    lastUpdated: product.lastUpdated ?: "NA",
+                    isHidden   : product.isHidden
+            ]
+        }
+
+
+        // Final JSON response
+        def jsonResponse = [
+                draw           : draw,
+                recordsTotal   : productList.totalCount,
+                recordsFiltered: productList.totalCount,
+                data           : productData
+        ]
+
+        render jsonResponse as JSON
     }
+
 
     def delete() {
         try {
@@ -144,7 +229,8 @@ class ProductController {
                 product.setIsUpdatable(true)
                 def deleted = product.delete(flush: true)
                 if (deleted == null) {
-                    response.status = 200
+                    JSONObject jsonObject = new JSONObject()
+                    respond jsonObject, formats: ['json'], status: 200
                 } else {
                     response.status = 400
                 }
