@@ -12,7 +12,7 @@ class Product implements Serializable, LogicalDelete<Product> {
     String image = "NA"
     String ingredients
     String benefits
-    String mfgDate
+    Date mfgDate
     String expiry
     int offer = 0
 
