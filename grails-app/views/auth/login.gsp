@@ -8,7 +8,7 @@
 <g:include view="layouts/sidebar.gsp"/>
 
 <!-- Login Page -->
-<div id="loginPage" class="page">
+<div id="loginPage">
     <section class="py-16">
         <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
             <div class="text-center mb-8">

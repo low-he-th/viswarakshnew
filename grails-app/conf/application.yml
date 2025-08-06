@@ -104,7 +104,7 @@ grails:
         port: 27017
         username: ""
         password: ""
-        databaseName: "viswaraksh"
+        databaseName: "myApp"
         default:
             mapping:
                 version: false

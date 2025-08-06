@@ -81,14 +81,13 @@ dependencies {
     implementation 'org.glassfish.jersey.inject:jersey-hk2:2.34'
     implementation "org.grails.plugins:gorm-logical-delete:2.0.0.BUILD-SNAPSHOT"
 }
-
 bootRun {
     ignoreExitValue true
     jvmArgs(
-        '-Dspring.output.ansi.enabled=always', 
+            '-Dspring.output.ansi.enabled=always',
 //        '-noverify',
-        '-XX:TieredStopAtLevel=1',
-        '-Xmx1024m')
+            '-XX:TieredStopAtLevel=1',
+            '-Xmx2048m')
     sourceResources sourceSets.main
     String springProfilesActive = 'spring.profiles.active'
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
@@ -96,39 +95,17 @@ bootRun {
 
 tasks.withType(GroovyCompile) {
     configure(groovyOptions) {
-        forkOptions.jvmArgs = ['-Xmx1024m']
+        forkOptions.jvmArgs = ['-Xmx2048m']
     }
 }
-
-tasks.withType(Test) {
-    useJUnitPlatform()
-}
-
-webdriverBinaries {
-    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
-        chromedriver {
-            version = '2.45.0'
-            fallbackTo32Bit = true
-        }
-        geckodriver '0.30.0'
-    }
-}
-
-
-tasks.withType(Test) {
-    systemProperty "geb.env", System.getProperty('geb.env')
-    systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
-    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
-        systemProperty 'webdriver.chrome.driver', System.getProperty('webdriver.chrome.driver')
-        systemProperty 'webdriver.gecko.driver', System.getProperty('webdriver.gecko.driver')
-    } else {
-        systemProperty 'webdriver.chrome.driver', "${System.getenv('CHROMEWEBDRIVER')}/chromedriver"
-        systemProperty 'webdriver.gecko.driver', "${System.getenv('GECKOWEBDRIVER')}/geckodriver"
-    }
-}
-
 
 assets {
-    minifyJs = true
-    minifyCss = true
+    minifyJs = false
+    minifyCss = false
 }
+
+
+tasks.withType(JavaCompile) {
+    options.incremental = true
+}
+

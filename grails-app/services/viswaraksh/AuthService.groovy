@@ -100,9 +100,9 @@ class AuthService
         try
         {
             Otp otpStore = Otp.findByMobile(mobile)
-            if (mobile.equalsIgnoreCase(new Constants(new FileManagementService().getIamConfigFile()).ADMIN_DEMO_USER.toString()) ||mobile.equalsIgnoreCase(new Constants(new FileManagementService().getIamConfigFile()).USER_DEMO_USER.toString()) || mobile.equalsIgnoreCase(new Constants(new FileManagementService().getIamConfigFile()).SUPERADMIN_DEMO_USER.toString()) /*|| mobile.equalsIgnoreCase(new UserConstants().SAFECONNECT_DEMO_USER.toString()) || mobile.equalsIgnoreCase(new UserConstants().SAFECONNECT_DEMO_USER_ONE.toString()) || mobile.equalsIgnoreCase(new UserConstants().SAFECONNECT_DEMO_USER_TWO.toString()) || mobile.equalsIgnoreCase(new UserConstants().SAFECONNECT_DEMO_USER_THREE.toString()) || mobile.equalsIgnoreCase(new UserConstants().SAFECONNECT_DEMO_USER_FOUR.toString())*/)
+            if (mobile.equalsIgnoreCase(new Constants().ADMIN_DEMO_USER.toString())  )
             {
-                otp = new Constants(new FileManagementService().getIamConfigFile()).SUPERADMIN_DEMO_OTP.toString()
+                otp = new Constants().DEMO_OTP.toString()
             }
             else
             {
@@ -127,7 +127,7 @@ class AuthService
                     message = message.replace("\$otp", addedOtp.webOtp)
 
                     def smsGatewayResponse = null
-                    if (mobile != null && !mobile.equalsIgnoreCase(new Constants(new FileManagementService().getIamConfigFile()).ADMIN_DEMO_USER.toString()) && !mobile.equalsIgnoreCase(new Constants(new FileManagementService().getIamConfigFile()).SUPERADMIN_DEMO_USER.toString()) )
+                    if (mobile != null && !mobile.equalsIgnoreCase(new Constants().ADMIN_DEMO_USER.toString()) )
                     {
                         try
                         {
@@ -137,7 +137,6 @@ class AuthService
                             {
                                 smsGatewayResponse =sendOTPMessage(addedOtp.mobile, addedOtp.webOtp, twoFactorConf)
 
-//                                smsGatewayResponse = sendOTPMessage(addedOtp.mobile, message, addedOtp.webOtp, twoFactorConf)
                             }
                             else
                             {
@@ -166,14 +165,13 @@ class AuthService
 
 
         User user = User.findByMobile(mobile)
-        if (!user.isPasswordBasedLogin)
-        {
+
             Auth auth = Auth.findByMobile(mobile)
             auth.webPassword = new AuthService().hashPassword(otp)
             auth.isUpdatable = true
             Auth updatedAuth = auth.save(flush: true)
 
-        }
+
         return status // Returning status
     }
 

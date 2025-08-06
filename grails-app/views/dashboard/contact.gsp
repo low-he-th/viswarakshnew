@@ -7,7 +7,7 @@
 <g:include view="layouts/topBar.gsp"/>
 <g:include view="layouts/sidebar.gsp"/>
 <!-- Contact Page -->
-<div id="contactPage" class="page">
+<div id="contactPage">
     <section class="py-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">

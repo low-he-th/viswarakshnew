@@ -19,10 +19,32 @@ class UrlMappings {
         "/"(controller: "dashboard", action: "dashboard")
 
 
-        // dashbaord
+        // admin dashbaord
         "/admin"(controller: "admin", action: "adminPanel")
         "/add/product"(controller: "admin", action: "addAndEditProduct")
         "/delete/product"(controller: "admin", action: "deleteProduct")
         "/get/product"(controller: "admin", action: "getProduct")
+
+
+        // About
+        "/about"(controller: "dashboard", action: "about")
+
+        // Contact
+        "/contact"(controller: "dashboard", action: "contact")
+
+        // User Product
+        "/userproduct"(controller: "product", action: "product")
+        "/add/to/cart"(controller: "product", action: "addToCart")
+        "/add/to/cart"(controller: "product", action: "addToCart")
+
+
+        //Payment
+        "/payment"(controller: "payment", action: "payment")
+
+
+        //login
+        "/login"(controller: "auth", action: "login")
+
+
     }
 }

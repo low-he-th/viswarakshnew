@@ -7,7 +7,7 @@
 <g:include view="layouts/topBar.gsp"/>
 <g:include view="layouts/sidebar.gsp"/>
 <!-- Products Page -->
-<div id="productsPage" class="page">
+<div id="productsPage">
     <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h3 class="text-3xl font-bold text-center mb-12 text-gray-900">Our Natural Products</h3>

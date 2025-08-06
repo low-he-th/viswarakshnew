@@ -8,7 +8,7 @@
 <g:include view="layouts/sidebar.gsp"/>
 
 <!-- Admin Dashboard Page -->
-<div id="adminPage" class="page">
+<div id="adminPage">
     <section class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-8">
