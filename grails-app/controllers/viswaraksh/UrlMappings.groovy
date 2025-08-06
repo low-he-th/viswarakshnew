@@ -3,7 +3,7 @@ package viswaraksh
 class UrlMappings {
 
     static mappings = {
-        "/$controller/$action?/$id?(.$format)?"{
+        "/$controller/$action?/$id?(.$format)?" {
             constraints {
                 // apply constraints here
             }
@@ -11,8 +11,8 @@ class UrlMappings {
 
 
 //        "/"(view:"/index")
-        "500"(view:'/error')
-        "404"(view:'/notFound')
+        "500"(view: '/error')
+        "404"(view: '/notFound')
 
 
         // dashbaord
@@ -34,9 +34,12 @@ class UrlMappings {
         "/send/message/contact"(controller: "dashboard", action: "sendMessageContact")
 
         // User Product
-        "/userproduct"(controller: "product", action: "product")
-        "/add/to/cart"(controller: "product", action: "addToCart")
-        "/add/to/cart"(controller: "product", action: "addToCart")
+        "/userproduct"(controller: "product", action: "productPage")
+        "/addproduct"(controller: "product", action: "add")
+        "/updateproduct"(controller: "product", action: "update")
+        "/getproducts"(controller: "product", action: "getProducts")
+        "/deleteproducts"(controller: "product", action: "delete")
+        "/hideproduct"(controller: "product", action: "hideProduct")
 
 
         //Payment
