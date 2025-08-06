@@ -2,6 +2,7 @@ package viswaraksh
 
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.web.json.JSONObject
+import products.Product
 
 class AdminController {
 

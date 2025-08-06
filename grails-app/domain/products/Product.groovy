@@ -1,24 +1,24 @@
-package viswaraksh
+package products
 
 import gorm.logical.delete.LogicalDelete
 
 class Product implements Serializable, LogicalDelete<Product> {
 
     String name
-    String price
-    String weight
-    String image
     String description
-    String benefits
+    double price
+    String weight
+    int stock
+    String image = "NA"
     String ingredients
-    String expiry
+    String benefits
     String mfgDate
-    String stock
-    String offer
-    String details
+    String expiry
+    int offer = 0
 
     Date dateCreated
     Date lastUpdated
+    boolean isHidden
 
     boolean isUpdatable
     static transients = ['isUpdatable']
@@ -37,10 +37,12 @@ class Product implements Serializable, LogicalDelete<Product> {
         mfgDate nullable: true
         stock nullable: true
         offer nullable: true
-        details nullable: true
     }
 
     static mapping = {
+        description sqlType: 'longText'
+        benefits sqlType: 'longText'
+        ingredients sqlType: 'longText'
     }
 
     def beforeUpdate() {
