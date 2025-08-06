@@ -34,7 +34,7 @@ class UrlMappings {
         "/send/message/contact"(controller: "dashboard", action: "sendMessageContact")
 
         // User Product
-        "/userproduct"(controller: "product", action: "productPage")
+        "/userproduct"(controller: "product", action: "product")
         "/addproduct"(controller: "product", action: "add")
         "/updateproduct"(controller: "product", action: "update")
         "/getproducts"(controller: "product", action: "getProducts")

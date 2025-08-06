@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat
 
 class ProductController {
 
-    def productPage() {}
+    def product() {}
 
     def add() {
         try {
