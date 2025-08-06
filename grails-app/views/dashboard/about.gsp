@@ -8,7 +8,7 @@
 <g:include view="layouts/sidebar.gsp"/>
 
 <!-- About Page -->
-<div id="aboutPage" class="page">
+<div id="aboutPage">
     <section class="py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">

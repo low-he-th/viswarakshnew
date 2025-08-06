@@ -2,7 +2,7 @@
 <header class="bg-white shadow-lg sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-            <div class="flex items-center cursor-pointer" onclick="showPage('home')">
+            <div class="flex items-center cursor-pointer" href="/">
                 <div class="text-2xl mr-2">🌿</div>
                 <div>
                     <h1 class="text-xl font-bold text-green-800">VISHWARAKSHA</h1>
@@ -10,15 +10,15 @@
                 </div>
             </div>
             <nav class="hidden md:flex space-x-6">
-                <a href="#" onclick="showPage('home')" class="text-gray-700 hover:text-green-600 font-medium">Home</a>
-                <a href="#" onclick="showPage('products')" class="text-gray-700 hover:text-green-600 font-medium">Products</a>
-                <a href="#" onclick="showPage('about')" class="text-gray-700 hover:text-green-600 font-medium">About</a>
-                <a href="#" onclick="showPage('contact')"
+                <a href="/"  class="text-gray-700 hover:text-green-600 font-medium">Home</a>
+                <a href="userproduct"  class="text-gray-700 hover:text-green-600 font-medium">Products</a>
+                <a href="about" class="text-gray-700 hover:text-green-600 font-medium">About</a>
+                <a href="contact"
                    class="text-gray-700 hover:text-green-600 font-medium">Contact</a>
-                <a href="#" onclick="showPage('admin')" class="text-gray-700 hover:text-green-600 font-medium">Admin</a>
+                <a href="admin" class="text-gray-700 hover:text-green-600 font-medium">Admin</a>
             </nav>
             <div class="flex items-center space-x-4">
-                <button onclick="showPage('login')"
+                <button onclick="window.location.href='login'"
                         class="hidden sm:block text-green-600 hover:text-green-800 font-medium">Login
                 </button>
                 <button onclick="toggleCart()" class="relative p-2 text-gray-700 hover:text-green-600">
