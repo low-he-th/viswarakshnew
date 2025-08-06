@@ -13,7 +13,7 @@ class Product implements Serializable, LogicalDelete<Product> {
     String ingredients
     String benefits
     Date mfgDate
-    String expiry
+    Date expiry
     int offer = 0
 
     Date dateCreated
