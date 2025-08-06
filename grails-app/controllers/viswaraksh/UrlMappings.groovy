@@ -31,6 +31,7 @@ class UrlMappings {
 
         // Contact
         "/contact"(controller: "dashboard", action: "contact")
+        "/send/message/contact"(controller: "dashboard", action: "sendMessageContact")
 
         // User Product
         "/userproduct"(controller: "product", action: "product")
@@ -44,7 +45,14 @@ class UrlMappings {
 
         //login
         "/login"(controller: "auth", action: "login")
+        "/get/otp"(controller: "auth", action: "getOtp")
+        "/verify/otp"(controller: "auth", action: "verifyOtp")
 
+        //Register
+        "/register"(controller: "auth", action: "register")
+        "/get/otp/register"(controller: "auth", action: "getOtpRegister")
+        "/verify/otp/register"(controller: "auth", action: "verifyOtpRegister")
 
+        "/api/media/$path**"(controller: "fileLocation", action: "index")
     }
 }

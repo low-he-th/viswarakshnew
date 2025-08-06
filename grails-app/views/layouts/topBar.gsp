@@ -38,19 +38,39 @@
         <!-- Mobile Menu -->
         <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-gray-200">
             <div class="px-4 py-2 space-y-1">
-                <a href="#" onclick="showPage('home'); toggleMobileMenu()"
+                <a href="/" onclick="toggleMobileMenu()"
                    class="block px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium">Home</a>
-                <a href="#" onclick="showPage('products'); toggleMobileMenu()"
+                <a href="userproduct" onclick="toggleMobileMenu()"
                    class="block px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium">Products</a>
-                <a href="#" onclick="showPage('about'); toggleMobileMenu()"
+                <a href="about" onclick=" toggleMobileMenu()"
                    class="block px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium">About</a>
-                <a href="#" onclick="showPage('contact'); toggleMobileMenu()"
+                <a href="contact" onclick="toggleMobileMenu()"
                    class="block px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium">Contact</a>
-                <a href="#" onclick="showPage('admin'); toggleMobileMenu()"
+                <a href="admin" onclick=" toggleMobileMenu()"
                    class="block px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md font-medium">Admin</a>
-                <a href="#" onclick="showPage('login'); toggleMobileMenu()"
+                <a href="login" onclick="toggleMobileMenu()"
                    class="block px-3 py-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-md font-medium sm:hidden">Login</a>
             </div>
         </div>
     </div>
 </header>
+<script>
+    // Toggle cart
+    function toggleCart() {
+        const sidebar = document.getElementById('cartSidebar');
+        const overlay = document.getElementById('cartOverlay');
+
+        if (sidebar.classList.contains('translate-x-full')) {
+            sidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+        } else {
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    }
+    // Toggle mobile menu
+    function toggleMobileMenu() {
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenu.classList.toggle('hidden');
+    }
+</script>

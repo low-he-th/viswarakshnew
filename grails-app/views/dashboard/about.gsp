@@ -17,37 +17,7 @@
                 <p class="text-xl text-gray-600">Naturally Nourishing Your Health Since 2023</p>
             </div>
 
-            <!-- Hero Story Section -->
-            <!--                <div class="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-xl p-8 mb-12">-->
-            <!--                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">-->
-            <!--                        <div>-->
-            <!--                            <h3 class="text-3xl font-bold text-green-800 mb-6">Our Story</h3>-->
-            <!--                            <p class="text-gray-700 mb-6 leading-relaxed">-->
-            <!--                                VISHWARAKSHA was born from a deep commitment to bringing the ancient wisdom of Ayurveda to modern hair care.-->
-            <!--                                We believe that nature provides the best solutions for healthy, beautiful hair, and our products are crafted-->
-            <!--                                with this philosophy at heart.-->
-            <!--                            </p>-->
-            <!--                            <p class="text-gray-700 mb-6 leading-relaxed">-->
-            <!--                                Our journey began with the simple belief that chemical-free, natural products should be accessible to everyone.-->
-            <!--                                Using traditional recipes passed down through generations, we create herbal formulations that nourish your hair-->
-            <!--                                from root to tip.-->
-            <!--                            </p>-->
-            <!--                            <div class="flex items-center space-x-4">-->
-            <!--                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">-->
-            <!--                                    <div class="text-2xl">🏆</div>-->
-            <!--                                </div>-->
-            <!--                                <div>-->
-            <!--                                    <h4 class="font-semibold text-gray-900">Quality Assured</h4>-->
-            <!--                                    <p class="text-gray-600 text-sm">100% Natural & Chemical Free</p>-->
-            <!--                                </div>-->
-            <!--                            </div>-->
-            <!--                        </div>-->
-            <!--                        <div class="relative">-->
-            <!--                            <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500&h=400&fit=crop" alt="Natural herbs" class="w-full h-80 object-cover rounded-xl shadow-lg">-->
-            <!--                            <div class="absolute inset-0 bg-gradient-to-t from-green-900/20 to-transparent rounded-xl"></div>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </div>-->
+
             <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
                 <h3 class="text-2xl font-bold text-green-800 mb-4">Our Story</h3>
                 <p class="text-gray-700 mb-4">
@@ -74,8 +44,11 @@
                     </div>
                 </div>
                 <div class="relative mt-2">
-                    <img src="https://placehold.co/400" alt="Natural herbs"
+                    <img src="api/media/about_company_photo.jpeg"
+                         onerror="this.onerror=null; this.src='https://placehold.co/400';"
+                         alt="Natural herbs"
                          class="w-full h-80 object-cover rounded-xl shadow-lg">
+
                     <div class="absolute inset-0 bg-gradient-to-t from-green-900/20 to-transparent rounded-xl"></div>
                 </div>
             </div>
@@ -125,18 +98,21 @@
                     <!-- Image Section -->
                     <div class="relative">
                         <h4 class="text-xl font-bold text-gray-900 mb-3 text-center">📷 Herbal Ingredients</h4>
-                        <img src="https://placehold.co/400" alt="Natural herbs"
-                             class="w-full h-80 object-cover rounded-xl shadow-lg">
+                    <img src="api/media/about_herbal_Ingredients_photo.jpeg"
+                         onerror="this.onerror=null; this.src='https://placehold.co/400';"
+                         alt="Natural herbs"
+                         class="w-full h-80 object-cover rounded-xl shadow-lg">
+
+
                         <div class="absolute inset-0 bg-gradient-to-t from-green-900/20 to-transparent rounded-xl"></div>
                     </div>
 
                     <!-- Video Section -->
                     <div class="relative">
                         <h4 class="text-xl font-bold text-gray-900 mb-3 text-center">🎥 Our Process</h4>
-                        <img src="https://placehold.co/400" alt="Natural herbs"
-                             class="w-full h-80 object-cover rounded-xl shadow-lg">
-                        <!--                    <video controls class="w-full h-80 object-cover rounded-xl shadow-lg">-->
-                        <!--                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">-->
+
+                                        <video controls class="w-full h-80 object-cover rounded-xl shadow-lg">
+                                           <source src="api/media/about_our_process_video.mp4" type="video/mp4">
 
                     </video>
                         <div class="absolute inset-0 bg-gradient-to-t from-green-900/20 to-transparent rounded-xl pointer-events-none"></div>

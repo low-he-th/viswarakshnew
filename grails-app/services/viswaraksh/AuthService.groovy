@@ -108,7 +108,7 @@ class AuthService
             {
                 otp = generateOTP(5)
             }
-
+println("otp:"+otp)
             if (!otpStore)
             {
                 otpStore = new Otp()
@@ -131,8 +131,10 @@ class AuthService
                     {
                         try
                         {
-                            String twoFactorConf = Config.findByName("TWO_FACTOR_CONFIG").value
-                            String twoFactor = Config.findByName("TWO_FACTOR_SMS").value
+//                            String twoFactorConf = Config.findByName("TWO_FACTOR_CONFIG").value
+//                            String twoFactor = Config.findByName("TWO_FACTOR_SMS").value
+                            String twoFactorConf = "Capulus+OTP"
+                            String twoFactor = "true"
                             if (twoFactor == 'true')
                             {
                                 smsGatewayResponse =sendOTPMessage(addedOtp.mobile, addedOtp.webOtp, twoFactorConf)
@@ -164,8 +166,6 @@ class AuthService
         }
 
 
-        User user = User.findByMobile(mobile)
-
             Auth auth = Auth.findByMobile(mobile)
             auth.webPassword = new AuthService().hashPassword(otp)
             auth.isUpdatable = true
@@ -194,7 +194,7 @@ class AuthService
 
 
     static Response sendOTPMessage(String mobile, String message, String twoFactor) {
-        SMSLog smsLog = new SMSLog()
+
         if (mobile?.trim() && message?.trim() && twoFactor?.trim()) {
             String encodedMessage = URLEncoder.encode(message, "UTF-8")
             String encodedTwoFactor = URLEncoder.encode(twoFactor, "UTF-8")
@@ -205,17 +205,14 @@ class AuthService
             client.close()
 
             if (apiResponse.status == 200) {
-                smsLog.status = true
-                smsLog.details = 'OTP sent to ' + mobile
+
                 println('OTP is: ' + message)
             } else {
-                smsLog.status = false
-                smsLog.details = 'OTP not sent to ' + mobile
+
+                println('OTP not sent to: ' + mobile)
             }
-            smsLog.mobile = mobile
-            smsLog.date = new Date()
-            SMSLog savedLog = smsLog.save(flush: true)
-            println(savedLog)
+
+
 
             return apiResponse
         }
