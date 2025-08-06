@@ -1,10 +1,10 @@
 
-<!-- Shopping Cart Sidebar -->
+<!-- Shopping carts Sidebar -->
 <div id="cartSidebar"
      class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
     <div class="p-6 border-b">
         <div class="flex justify-between items-center">
-            <h3 class="text-xl font-semibold">Shopping Cart</h3>
+            <h3 class="text-xl font-semibold">Shopping carts</h3>
             <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700">✕</button>
         </div>
     </div>
@@ -22,5 +22,5 @@
         </button>
     </div>
 </div>
-<!-- Cart Overlay -->
+<!-- carts Overlay -->
 <div id="cartOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleCart()"></div>
