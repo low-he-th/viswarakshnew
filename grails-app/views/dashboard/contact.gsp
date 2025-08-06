@@ -20,47 +20,49 @@
                 <!-- Contact Form -->
                 <div class="bg-white rounded-xl shadow-lg p-8">
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h3>
-                    <form onsubmit="handleContactForm(event)">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-medium mb-2">Full Name</label>
-                            <input type="text" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
-                                   placeholder="Enter your full name">
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
-                            <input type="email" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
-                                   placeholder="Enter your email">
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-medium mb-2">Phone Number</label>
-                            <input type="tel"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
-                                   placeholder="Enter your phone number">
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-medium mb-2">Subject</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
-                                <option>Product Inquiry</option>
-                                <option>Order Support</option>
-                                <option>General Question</option>
-                                <option>Feedback</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
-                        <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-medium mb-2">Message</label>
-                            <textarea required rows="4"
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
-                                      placeholder="Enter your message"></textarea>
-                        </div>
-                        <button type="submit"
-                                class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
-                            Send Message
-                        </button>
-                    </form>
-                </div>
+                <form id="handleContactForm" autocomplete="off">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="fullName">Full Name</label>
+                        <input type="text" required id="fullName" name="fullName" autocomplete="off"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
+                               placeholder="Enter your full name">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="email">Email Address</label>
+                        <input type="email" required id="email" name="email" autocomplete="off"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
+                               placeholder="Enter your email">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" autocomplete="off"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
+                               placeholder="Enter your phone number">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="subject">Subject</label>
+                        <select id="subject" name="subject" autocomplete="off"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
+                            <option>Product Inquiry</option>
+                            <option>Order Support</option>
+                            <option>General Question</option>
+                            <option>Feedback</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="message">Message</label>
+                        <textarea required rows="4" id="message" name="message" autocomplete="off"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
+                                  placeholder="Enter your message"></textarea>
+                    </div>
+                    <button type="submit"
+                            class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
+                        Send Message
+                    </button>
+                </form>
+
+            </div>
 
                 <!-- Contact Information -->
                 <div class="space-y-8">
@@ -126,8 +128,45 @@
 </div>
 
 <g:include view="layouts/footer.gsp"/>
+
 <script>
 
+    // Show notification
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-20 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+    $(document).ready(function () {
+        $('#handleContactForm').on("submit", function (e) {
+            e.preventDefault(); // prevent page reload
+
+
+
+            $.ajax({
+                url: "send/message/contact",
+                method: "POST",
+                dataType:"json",
+                data:formDate, // send as form data
+                success: function (response) {
+
+
+                    showNotification('Message sent!');
+
+                },
+                error: function () {
+                    showNotification("Message not sent!");
+                }
+            });
+
+        });
+
+    });
 </script>
 </body>
 </html>

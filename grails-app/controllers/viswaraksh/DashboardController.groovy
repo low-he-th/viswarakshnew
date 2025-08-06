@@ -6,11 +6,15 @@ class DashboardController {
 
     def about(){
 
-        println("123")
+
     }
 
 
     def contact(){
+
+    }
+
+    def sendMessageContact(){
 
     }
 }

@@ -16,7 +16,7 @@
             <p class="text-2xl mb-8 text-green-100">~ NATURALLY NOURISHING YOUR HEALTH ~</p>
             <p class="text-xl mb-8 max-w-3xl mx-auto">Experience the power of nature with our 100% pure, natural &
             chemical-free herbal products</p>
-            <button onclick="showPage('products')"
+            <button onclick="window.location.href='userproduct'"
                     class="bg-white text-green-700 px-8 py-3 rounded-lg font-semibold hover:bg-green-50 transition duration-300">
                 Shop Natural Products
             </button>

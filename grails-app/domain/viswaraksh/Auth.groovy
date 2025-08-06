@@ -6,7 +6,7 @@ class Auth implements Serializable, LogicalDelete<Auth> {
     String username
     String webPassword
     String mobile
-    String imei
+
     User user
 
     Date dateCreated
@@ -18,10 +18,10 @@ class Auth implements Serializable, LogicalDelete<Auth> {
 
     static constraints = {
         user nullable: true
-        username unique: true
+        username nullable: true
         webPassword nullable: true
         mobile nullable: true
-        imei nullable: true
+
     }
     def beforeUpdate()    {
 
