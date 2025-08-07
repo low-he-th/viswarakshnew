@@ -630,10 +630,10 @@
             return '<tr>' +
                 '<td class="px-2 md:px-4 py-3">' +
                 '<div class="flex items-center space-x-2 md:space-x-3">' +
-                '<img src="' + product.image + '" alt="' + product.name + '" class="w-16 h-16 object-cover rounded-lg" />' +
+                '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="w-16 h-16 object-cover rounded-lg" />' +
                 '<div class="min-w-0 flex-1">' +
                 '<p class="font-medium text-gray-900 text-sm md:text-base truncate">' + product.name + '</p>' +
-                '<p class="text-xs md:text-sm text-gray-600 hidden sm:block">' + product.description + '</p>' +
+                // '<p class="text-xs md:text-sm text-gray-600 hidden sm:block">' + product.description + '</p>' +
                 '</div>' +
                 '</div>' +
                 '</td>' +
