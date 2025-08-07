@@ -71,7 +71,6 @@ class AdminController {
                 product.setWeight(params.weight)
                 product.setIngredients(params.ingredients)
                 product.setBenefits(params.benefits)
-                product.setExpiry(params.expiry)
                 def offer = params.int("offer")
                 product.setOffer(offer)
                 def stock = params.int("stock")

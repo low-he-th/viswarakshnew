@@ -189,6 +189,10 @@
                                 <!-- Products will be populated here -->
                                 </tbody>
                             </table>
+
+                            <div id="paginationControls" class="mt-4 flex items-center"
+                                 style="justify-content: end"></div>
+
                         </div>
                     </div>
                 </div>
@@ -228,6 +232,7 @@
                                 <!-- Orders will be populated here -->
                                 </tbody>
                             </table>
+                            <div id="ordersPagination" class="flex mt-4 space-x-2" style="justify-content:flex-end"></div>
                         </div>
                     </div>
                 </div>
@@ -390,10 +395,13 @@
             <!-- Product Image Upload -->
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-medium mb-2">Product Image</label>
+
                 <div class="flex items-center space-x-4">
                     <div class="flex-1">
-                        <input type="file" id="productImageFile" name="imageFile" accept="image/*" onchange="previewImage(this)"
+                        <input type="file" id="productImageFile" name="imageFile" accept="image/*"
+                               onchange="previewImage(this)"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
+
                         <p class="text-xs text-gray-500 mt-1">Upload product image (JPG, PNG)</p>
                     </div>
                 </div>
@@ -432,8 +440,8 @@
 
             <!-- Description -->
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-medium mb-2">Description</label>
-                <textarea id="productDescription" name="desc" rows="3" required
+                <label class="block text-gray-700 text-sm font-medium mb-2">Short Description</label>
+                <textarea id="productDescription" name="desc" rows="3" required maxlength="80"
                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"></textarea>
             </div>
 
@@ -446,7 +454,7 @@
 
             <!-- Benefits -->
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-medium mb-2">Benefits (one per line)</label>
+                <label class="block text-gray-700 text-sm font-medium mb-2">Description</label>
                 <textarea id="productBenefits" name="benefits" rows="4" required
                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"></textarea>
             </div>
@@ -476,7 +484,8 @@
             <!-- isHidden -->
             <div class="mb-6">
                 <label class="inline-flex items-center">
-                    <input type="checkbox" id="productIsHidden" name="isHidden" class="form-checkbox h-5 w-5 text-green-600">
+                    <input type="checkbox" id="productIsHidden" name="isHidden"
+                           class="form-checkbox h-5 w-5 text-green-600">
                     <span class="ml-2 text-gray-700 text-sm">Hide this product from users</span>
                 </label>
             </div>
@@ -498,6 +507,8 @@
 <g:include view="layouts/footer.gsp"/>
 <script>
     let currentAdminTab = 'overview';
+
+    //Products
     fetchProducts()
     // Admin data
     let adminData = {
@@ -597,37 +608,69 @@
         currentAdminTab = tabName;
     }
 
-    function renderAdminOverview() {
-        const recentActivity = document.getElementById('recentActivity');
-        recentActivity.innerHTML = adminData.recentActivity.map(function (activity) {
-            return '<div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">' +
-                '<div class="text-2xl">' +
-                (activity.type === 'order' ? '📦' :
-                    activity.type === 'payment' ? '💳' :
-                        activity.type === 'product' ? '🌿' : '👥') +
-                '</div>' +
-                '<div class="flex-1">' +
-                '<p class="text-sm text-gray-900">' + activity.message + '</p>' +
-                '<p class="text-xs text-gray-500">' + activity.time + '</p>' +
-                '</div>' +
-                '</div>';
-        }).join('');
-    }
+    // function renderAdminOverview() {
+    //     const recentActivity = document.getElementById('recentActivity');
+    //     recentActivity.innerHTML = adminData.recentActivity.map(function (activity) {
+    //         return '<div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">' +
+    //             '<div class="text-2xl">' +
+    //             (activity.type === 'order' ? '📦' :
+    //                 activity.type === 'payment' ? '💳' :
+    //                     activity.type === 'product' ? '🌿' : '👥') +
+    //             '</div>' +
+    //             '<div class="flex-1">' +
+    //             '<p class="text-sm text-gray-900">' + activity.message + '</p>' +
+    //             '<p class="text-xs text-gray-500">' + activity.time + '</p>' +
+    //             '</div>' +
+    //             '</div>';
+    //     }).join('');
+    // }
 
     let products = [];
 
-    function fetchProducts() {
-        fetch('/getproducts?draw=1&start=0&length=100') // adjust length or pagination as needed
+    var currentPage = 1;
+    var pageSize = 10; // Display 10 per page
+
+    function fetchProducts(page = 1) {
+        currentPage = page;
+        const start = (page - 1) * pageSize;
+
+        fetch('/getproducts?draw=1&start=' + start + '&length=' + pageSize)
             .then(response => response.json())
             .then(data => {
-                products = data.data; // assuming Grails returns products inside "data"
+                products = data.data;
                 renderProductsTable();
+                renderPaginationControls(data.recordsTotal);
             })
             .catch(error => {
                 console.error('Error fetching products:', error);
                 document.getElementById('productsTable').innerHTML =
-                    '<tr><td colspan="5" class="text-center py-4 text-red-600">No products Available.</td></tr>';
+                    '<tr><td colspan="5" class="text-center py-4 text-red-600">No products available.</td></tr>';
             });
+    }
+
+    function renderPaginationControls(totalRecords) {
+        const totalPages = Math.ceil(totalRecords / pageSize);
+        const paginationDiv = document.getElementById('paginationControls');
+        paginationDiv.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        let html = '';
+
+        html += '<button ' + (currentPage === 1 ? 'disabled' : '') +
+            ' onclick="fetchProducts(' + (currentPage - 1) + ')"' +
+            ' class="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300">Previous</button>';
+
+        for (let i = 1; i <= totalPages; i++) {
+            html += '<button onclick="fetchProducts(' + i + ')" class="px-3 py-1 mx-1 rounded ' +
+                (i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300') + '">' + i + '</button>';
+        }
+
+        html += '<button ' + (currentPage === totalPages ? 'disabled' : '') +
+            ' onclick="fetchProducts(' + (currentPage + 1) + ')"' +
+            ' class="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300">Next</button>';
+
+        paginationDiv.innerHTML = html;
     }
 
     function renderProductsTable() {
@@ -639,7 +682,6 @@
                 '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="w-16 h-16 object-cover rounded-lg" />' +
                 '<div class="min-w-0 flex-1">' +
                 '<p class="font-medium text-gray-900 text-sm md:text-base truncate">' + product.name + '</p>' +
-                // '<p class="text-xs md:text-sm text-gray-600 hidden sm:block">' + product.description + '</p>' +
                 '</div>' +
                 '</div>' +
                 '</td>' +
@@ -680,7 +722,10 @@
             success: function (response) {
                 console.log(response);
                 closeProductModal()
-                var message = productId ? "Product Updated" : "Product Added"
+                var message = "Product Updated"
+                if (url === "addproduct") {
+                    message = "Product Added"
+                }
                 showNotification(message);
                 fetchProducts();
             },
@@ -693,9 +738,6 @@
 
     });
 
-    function closeProductModal() {
-        document.getElementById('productModal').classList.add('hidden');
-    }
 
     function openAddProductModal() {
         closeProductModal(); // clears previous data
@@ -706,13 +748,13 @@
         $.ajax({
             url: 'deleteproducts', // or '/product/delete' if it's in a namespaced controller
             type: 'POST',
-            data: { id: id },
+            data: {id: id},
             success: function (response, status, xhr) {
                 // if (response.status === 200) {
-                    // You can either:
-                    // Option 1: Refresh the full table
-                    showNotification("Product Deleted")
-                    fetchProducts();
+                // You can either:
+                // Option 1: Refresh the full table
+                showNotification("Product Deleted")
+                fetchProducts();
                 // } else {
                 //     showNotification("Delete failed")
                 // }
@@ -740,8 +782,8 @@
         $('#productDescription').val(product.description);
         $('#productIngredients').val(product.ingredients);
         $('#productBenefits').val(product.benefits); // convert array to text
-        $('#productMfgDate').val(product.mfgDate);  // Ensure backend returns yyyy-mm-dd
-        $('#productExpiry').val(product.expiry);
+        $('#productMfgDate').val(formatDateForInput(product.mfgDate));
+        $('#productExpiry').val(formatDateForInput(product.expiry));
         $('#productOffer').val(product.offer);
         $('#productIsHidden').prop('checked', product.isHidden);
 
@@ -757,6 +799,13 @@
         $('#modalTitle').text('Edit Product');
     }
 
+    function formatDateForInput(dateString) {
+        // Expects input as "dd/MM/yyyy HH:mm:ss"
+        if (!dateString) return '';
+        const parts = dateString.split(' ')[0].split('/');
+        return parts[2] + '-' + parts[1] + '-' + parts[0]; // yyyy-MM-dd
+    }
+
     function closeProductModal() {
         // Hide modal
         $('#productModal').addClass('hidden');
@@ -767,7 +816,6 @@
         $('#previewImg').hide().attr('src', '');
         $('#modalTitle').text('Add New Product');
     }
-
 
     function renderOrdersTable() {
         const ordersTable = document.getElementById('ordersTable');
@@ -789,29 +837,105 @@
         }).join('');
     }
 
-    function renderPaymentsTable() {
-        const paymentsTable = document.getElementById('paymentsTable');
-        paymentsTable.innerHTML = adminData.payments.map(function (payment) {
+    // function renderPaymentsTable() {
+    //     const paymentsTable = document.getElementById('paymentsTable');
+    //     paymentsTable.innerHTML = adminData.payments.map(function (payment) {
+    //         return '<tr>' +
+    //             '<td class="px-2 md:px-4 py-3 font-medium text-gray-900 text-sm md:text-base">' + payment.id + '</td>' +
+    //             '<td class="px-2 md:px-4 py-3 text-gray-900 text-sm md:text-base">' + payment.customer + '</td>' +
+    //             '<td class="px-2 md:px-4 py-3 font-semibold text-green-600 text-sm md:text-base">₹' + payment.amount + '</td>' +
+    //             '<td class="hidden sm:table-cell px-2 md:px-4 py-3">' +
+    //             '<span class="px-1 md:px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">' +
+    //             payment.method +
+    //             '</span>' +
+    //             '</td>' +
+    //             '<td class="px-2 md:px-4 py-3">' +
+    //             '<span class="px-1 md:px-2 py-1 text-xs rounded-full ' +
+    //             (payment.status === 'Success' ? 'bg-green-100 text-green-800' :
+    //                 payment.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+    //                     'bg-red-100 text-red-800') +
+    //             '">' + payment.status + '</span>' +
+    //             '</td>' +
+    //             '<td class="hidden lg:table-cell px-2 md:px-4 py-3 text-gray-600 text-xs md:text-sm">' + payment.date + '</td>' +
+    //             '</tr>';
+    //     }).join('');
+    // }
+</script>
+
+<script>
+    //Orders
+    // Fetch on page load
+    fetchOrders();
+    let orders = [];
+    var currentOrderPage = 1;
+    var orderPageSize = 10;
+
+    function fetchOrders(page = 1) {
+        currentOrderPage = page;
+        const start = (page - 1) * orderPageSize;
+
+        fetch('/getorders?draw=1&start=' + start + '&length=' + orderPageSize)
+            .then(response => response.json())
+            .then(data => {
+                orders = data.data;
+                renderOrdersTable();
+                renderOrderPaginationControls(data.recordsTotal);
+            })
+            .catch(error => {
+                console.error('Error fetching orders:', error);
+                document.getElementById('ordersTable').innerHTML =
+                    '<tr><td colspan="6" class="text-center py-4 text-red-600">No orders available.</td></tr>';
+            });
+    }
+
+    function renderOrdersTable() {
+        const ordersTable = document.getElementById('ordersTable');
+        ordersTable.innerHTML = orders.map(function (order) {
             return '<tr>' +
-                '<td class="px-2 md:px-4 py-3 font-medium text-gray-900 text-sm md:text-base">' + payment.id + '</td>' +
-                '<td class="px-2 md:px-4 py-3 text-gray-900 text-sm md:text-base">' + payment.customer + '</td>' +
-                '<td class="px-2 md:px-4 py-3 font-semibold text-green-600 text-sm md:text-base">₹' + payment.amount + '</td>' +
-                '<td class="hidden sm:table-cell px-2 md:px-4 py-3">' +
-                '<span class="px-1 md:px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">' +
-                payment.method +
-                '</span>' +
-                '</td>' +
+                '<td class="px-2 md:px-4 py-3 font-medium text-gray-900 text-sm md:text-base">' + order.orderId + '</td>' +
+                '<td class="px-2 md:px-4 py-3 text-gray-900 text-sm md:text-base">' + (order.username || 'NA') + '</td>' +
+                '<td class="hidden lg:table-cell px-2 md:px-4 py-3 text-gray-600 text-sm">' + (order.productdescription || 'NA') + '</td>' +
+                '<td class="px-2 md:px-4 py-3 font-semibold text-green-600 text-sm md:text-base">' + order.amount + '</td>' +
                 '<td class="px-2 md:px-4 py-3">' +
                 '<span class="px-1 md:px-2 py-1 text-xs rounded-full ' +
-                (payment.status === 'Success' ? 'bg-green-100 text-green-800' :
-                    payment.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800') +
-                '">' + payment.status + '</span>' +
+                (order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
+                    order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
+                        order.status === 'Processing' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800') +
+                '">' + order.status + '</span>' +
                 '</td>' +
-                '<td class="hidden lg:table-cell px-2 md:px-4 py-3 text-gray-600 text-xs md:text-sm">' + payment.date + '</td>' +
+                '<td class="hidden sm:table-cell px-2 md:px-4 py-3">' + formatOrderDate(order.dateCreated) + '</td>' +
                 '</tr>';
         }).join('');
     }
+
+    function formatOrderDate(dateStr) {
+        if (!dateStr) return 'NA';
+        const parts = dateStr.split(' ')[0].split('/');
+        return parts.length === 3 ? parts[1] + '/' + parts[0] + '/' + parts[2] : dateStr;
+    }
+
+    function renderOrderPaginationControls(totalRecords) {
+        const totalPages = Math.ceil(totalRecords / orderPageSize);
+        const container = document.getElementById('ordersPagination');
+        container.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        let html = '';
+        html += '<button ' + (currentOrderPage === 1 ? 'disabled' : '') +
+            ' onclick="fetchOrders(' + (currentOrderPage - 1) + ')" class="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300">Previous</button>';
+
+        for (let i = 1; i <= totalPages; i++) {
+            html += '<button onclick="fetchOrders(' + i + ')" class="px-3 py-1 mx-1 rounded ' +
+                (i === currentOrderPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300') + '">' + i + '</button>';
+        }
+
+        html += '<button ' + (currentOrderPage === totalPages ? 'disabled' : '') +
+            ' onclick="fetchOrders(' + (currentOrderPage + 1) + ')" class="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300">Next</button>';
+
+        container.innerHTML = html;
+    }
 </script>
+
 </body>
 </html>
