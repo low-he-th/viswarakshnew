@@ -1,13 +1,15 @@
-package products
+package order
 
 import gorm.logical.delete.LogicalDelete
+import products.Product
 import viswaraksh.User
 
-class ProductCart implements Serializable, LogicalDelete<ProductCart> {
+class Order implements Serializable, LogicalDelete<Order> {
 
     User user
     Product product
-    int quantity
+    int amount
+    String orderId
 
     Date dateCreated
     Date lastUpdated
@@ -21,8 +23,8 @@ class ProductCart implements Serializable, LogicalDelete<ProductCart> {
     static constraints = {
         user nullable: true
         product nullable: true
-        quantity nullable: true
-
+        orderId nullable: true
+        amount nullable: true
     }
 
     static mapping = {
@@ -31,10 +33,10 @@ class ProductCart implements Serializable, LogicalDelete<ProductCart> {
 
     def beforeUpdate() {
         if (!this.isUpdatable) {
-            println("ProductCart update prevented at ${new Date()} , ProductCart: ${this.id}")
+            println("Order update prevented at ${new Date()} , Order: ${this.id}")
             return false
         } else {
-            println("ProductCart updated at ${new Date()} , ProductCart: ${this.id}")
+            println("Order updated at ${new Date()} , Order: ${this.id}")
         }
     }
 }

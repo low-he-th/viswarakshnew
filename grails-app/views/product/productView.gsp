@@ -55,7 +55,7 @@
         html += '<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">';
         html += '<div class="space-y-4">';
         html += '<div class="relative">';
-        html += '<img src="' + product.image + '" alt="' + product.name + '" class="w-full h-96 object-cover rounded-xl shadow-lg" ';
+        html += '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="w-full h-96 object-cover rounded-xl shadow-lg" ';
         html += 'onerror="this.src=\'https://placehold.co/400\'; this.alt=\'Product image not available\';">';
 
         if (product.offer > 0) {
@@ -84,7 +84,7 @@
 
         html += '<div class="flex items-center space-x-4 text-sm text-gray-600">';
         html += '<span><strong>Weight:</strong> ' + product.weight + '</span>';
-        html += '<span><strong>Stock:</strong> ' + product.stock + ' available</span>';
+        html += '<span><strong>Stock:</strong> ' + product.stock + ' Available</span>';
         html += '</div>';
 
         html += '<div class="flex space-x-4">';
@@ -94,31 +94,15 @@
 
         // ✅ Benefits Section (Fixed to parse JSON string)
         html += '<div class="bg-white border rounded-xl p-6">';
-        html += '<h5 class="font-semibold text-gray-900 mb-3">Key Benefits:</h5>';
+        html += '<h5 class="font-semibold text-gray-900 mb-3">Description:</h5>';
         html += '<ul class="space-y-2">';
-        try {
-            const benefitsArray = JSON.parse(product.benefits);
-            if (Array.isArray(benefitsArray)) {
-                benefitsArray.forEach(benefit => {
-                    if (benefit.trim()) {
-                        html += '<li class="flex items-start space-x-2">';
-                        html += '<span class="text-green-600 mt-1">•</span>';
-                        html += '<span class="text-gray-700">' + benefit.trim() + '</span>';
-                        html += '</li>';
-                    }
-                });
-            } else {
-                html += '<li class="text-gray-500">No benefits available.</li>';
-            }
-        } catch (e) {
-            console.error("Error parsing benefits:", e);
-            html += '<li class="text-gray-500">Error loading benefits.</li>';
-        }
+        html += '<li class="text-gray-700">' + product.benefits + '</li>';
+
         html += '</ul>';
         html += '</div>';
 
         // ✅ Product Info
-        html += '<div class="bg-gray-50 rounded-xl p-6">';
+        html += '<div class="bg-white border rounded-xl p-6">';
         html += '<h5 class="font-semibold text-gray-900 mb-3">Product Information:</h5>';
         html += '<div class="space-y-2 text-sm">';
         html += '<p><strong>Manufacturing Date:</strong> ' + product.mfgDate.split(' ')[0] + '</p>';
@@ -129,7 +113,7 @@
         html += '</div>';
 
         // ✅ Ingredients
-        html += '<div class="bg-blue-50 rounded-xl p-6">';
+        html += '<div class="bg-white border rounded-xl p-6">';
         html += '<h5 class="font-semibold text-blue-900 mb-3">Ingredients:</h5>';
         html += '<p class="text-blue-800 text-sm">' + product.ingredients + '</p>';
         html += '</div>';

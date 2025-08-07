@@ -39,9 +39,13 @@
                 method: "POST",
                 dataType: "json",
                 success: function (response) {
-                    renderProducts(response)
-
-                    renderPagination()
+                    if (Array.isArray(response) && response.length === 0) {
+                        var html = '<p>No Product available</p>';
+                        $('#productGrid').html(html); // Replace with your actual container ID
+                    } else {
+                        renderProducts(response);
+                        renderPagination();
+                    }
 
                 },
                 error: function () {
@@ -58,7 +62,7 @@
     const productsPerPage = 8;
     let totalPages = 0
 
-
+    const products =[]
 
     // Render products with pagination
     function renderProducts(products) {
@@ -70,7 +74,7 @@
         productGrid.innerHTML = currentProducts.map(function(product) {
             var html = '<div class="product-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">';
             html += '<div class="relative">';
-            html += '<img src="' + product.image + '" alt="' + product.name + '" class="product-image" onerror="this.onerror=null; this.src=\'https://placehold.co/400\'; this.alt=\'Product image not available\';">';
+            html += '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="product-image" onerror="this.onerror=null; this.src=\'https://placehold.co/400\'; this.alt=\'Product image not available\';">';
             if (product.offer > 0) {
                 html += '<div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">' + product.offer + '% OFF</div>';
             }
