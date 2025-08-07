@@ -18,7 +18,7 @@ class Product implements Serializable, LogicalDelete<Product> {
 
     Date dateCreated
     Date lastUpdated
-    boolean isHidden
+
 
     boolean isUpdatable
     static transients = ['isUpdatable']

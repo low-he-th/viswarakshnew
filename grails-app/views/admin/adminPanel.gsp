@@ -473,13 +473,7 @@
                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
             </div>
 
-            <!-- isHidden -->
-            <div class="mb-6">
-                <label class="inline-flex items-center">
-                    <input type="checkbox" id="productIsHidden" name="isHidden" class="form-checkbox h-5 w-5 text-green-600">
-                    <span class="ml-2 text-gray-700 text-sm">Hide this product from users</span>
-                </label>
-            </div>
+
 
             <!-- Submit Buttons -->
             <div class="flex justify-end space-x-4">
@@ -626,7 +620,7 @@
             .catch(error => {
                 console.error('Error fetching products:', error);
                 document.getElementById('productsTable').innerHTML =
-                    '<tr><td colspan="5" class="text-center py-4 text-red-600">Failed to load products.</td></tr>';
+                    '<tr><td colspan="5" class="text-center py-4 text-red-600">No products Available.</td></tr>';
             });
     }
 
@@ -754,7 +748,6 @@
         $('#productMfgDate').val(product.mfgDate);  // Ensure backend returns yyyy-mm-dd
         $('#productExpiry').val(product.expiry);
         $('#productOffer').val(product.offer);
-        $('#productIsHidden').prop('checked', product.isHidden);
 
         // Set preview image
         if (product.image) {
