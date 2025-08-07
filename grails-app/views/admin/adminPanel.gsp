@@ -189,6 +189,10 @@
                                 <!-- Products will be populated here -->
                                 </tbody>
                             </table>
+
+                            <div id="paginationControls" class="mt-4 flex items-center"
+                                 style="justify-content: end"></div>
+
                         </div>
                     </div>
                 </div>
@@ -390,10 +394,13 @@
             <!-- Product Image Upload -->
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-medium mb-2">Product Image</label>
+
                 <div class="flex items-center space-x-4">
                     <div class="flex-1">
-                        <input type="file" id="productImageFile" name="imageFile" accept="image/*" onchange="previewImage(this)"
+                        <input type="file" id="productImageFile" name="imageFile" accept="image/*"
+                               onchange="previewImage(this)"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
+
                         <p class="text-xs text-gray-500 mt-1">Upload product image (JPG, PNG)</p>
                     </div>
                 </div>
@@ -432,8 +439,8 @@
 
             <!-- Description -->
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-medium mb-2">Description</label>
-                <textarea id="productDescription" name="desc" rows="3" required
+                <label class="block text-gray-700 text-sm font-medium mb-2">Short Description</label>
+                <textarea id="productDescription" name="desc" rows="3" required maxlength="80"
                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"></textarea>
             </div>
 
@@ -446,7 +453,7 @@
 
             <!-- Benefits -->
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-medium mb-2">Benefits (one per line)</label>
+                <label class="block text-gray-700 text-sm font-medium mb-2">Description</label>
                 <textarea id="productBenefits" name="benefits" rows="4" required
                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"></textarea>
             </div>
@@ -610,18 +617,50 @@
 
     let products = [];
 
-    function fetchProducts() {
-        fetch('/getproducts?draw=1&start=0&length=100') // adjust length or pagination as needed
+    var currentPage = 1;
+    var pageSize = 10; // Display 10 per page
+
+    function fetchProducts(page = 1) {
+        currentPage = page;
+        const start = (page - 1) * pageSize;
+
+        fetch('/getproducts?draw=1&start=' + start + '&length=' + pageSize)
             .then(response => response.json())
             .then(data => {
-                products = data.data; // assuming Grails returns products inside "data"
+                products = data.data;
                 renderProductsTable();
+                renderPaginationControls(data.recordsTotal);
             })
             .catch(error => {
                 console.error('Error fetching products:', error);
                 document.getElementById('productsTable').innerHTML =
-                    '<tr><td colspan="5" class="text-center py-4 text-red-600">No products Available.</td></tr>';
+                    '<tr><td colspan="5" class="text-center py-4 text-red-600">No products available.</td></tr>';
             });
+    }
+
+    function renderPaginationControls(totalRecords) {
+        const totalPages = Math.ceil(totalRecords / pageSize);
+        const paginationDiv = document.getElementById('paginationControls');
+        paginationDiv.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        let html = '';
+
+        html += '<button ' + (currentPage === 1 ? 'disabled' : '') +
+            ' onclick="fetchProducts(' + (currentPage - 1) + ')"' +
+            ' class="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300">Previous</button>';
+
+        for (let i = 1; i <= totalPages; i++) {
+            html += '<button onclick="fetchProducts(' + i + ')" class="px-3 py-1 mx-1 rounded ' +
+                (i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300') + '">' + i + '</button>';
+        }
+
+        html += '<button ' + (currentPage === totalPages ? 'disabled' : '') +
+            ' onclick="fetchProducts(' + (currentPage + 1) + ')"' +
+            ' class="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300">Next</button>';
+
+        paginationDiv.innerHTML = html;
     }
 
     function renderProductsTable() {
@@ -633,7 +672,6 @@
                 '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="w-16 h-16 object-cover rounded-lg" />' +
                 '<div class="min-w-0 flex-1">' +
                 '<p class="font-medium text-gray-900 text-sm md:text-base truncate">' + product.name + '</p>' +
-                // '<p class="text-xs md:text-sm text-gray-600 hidden sm:block">' + product.description + '</p>' +
                 '</div>' +
                 '</div>' +
                 '</td>' +
@@ -674,7 +712,10 @@
             success: function (response) {
                 console.log(response);
                 closeProductModal()
-                var message = productId ? "Product Updated" : "Product Added"
+                var message = "Product Updated"
+                if (url === "addproduct") {
+                    message = "Product Added"
+                }
                 showNotification(message);
                 fetchProducts();
             },
@@ -700,13 +741,13 @@
         $.ajax({
             url: 'deleteproducts', // or '/product/delete' if it's in a namespaced controller
             type: 'POST',
-            data: { id: id },
+            data: {id: id},
             success: function (response, status, xhr) {
                 // if (response.status === 200) {
-                    // You can either:
-                    // Option 1: Refresh the full table
-                    showNotification("Product Deleted")
-                    fetchProducts();
+                // You can either:
+                // Option 1: Refresh the full table
+                showNotification("Product Deleted")
+                fetchProducts();
                 // } else {
                 //     showNotification("Delete failed")
                 // }
@@ -716,7 +757,6 @@
             }
         });
     }
-
 
 
     // Show notification
@@ -745,8 +785,8 @@
         $('#productDescription').val(product.description);
         $('#productIngredients').val(product.ingredients);
         $('#productBenefits').val(product.benefits); // convert array to text
-        $('#productMfgDate').val(product.mfgDate);  // Ensure backend returns yyyy-mm-dd
-        $('#productExpiry').val(product.expiry);
+        $('#productMfgDate').val(formatDateForInput(product.mfgDate));
+        $('#productExpiry').val(formatDateForInput(product.expiry));
         $('#productOffer').val(product.offer);
 
         // Set preview image
@@ -760,6 +800,14 @@
         $('#productModal').removeClass('hidden');
         $('#modalTitle').text('Edit Product');
     }
+
+    function formatDateForInput(dateString) {
+        // Expects input as "dd/MM/yyyy HH:mm:ss"
+        if (!dateString) return '';
+        const parts = dateString.split(' ')[0].split('/');
+        return parts[2] + '-' + parts[1] + '-' + parts[0]; // yyyy-MM-dd
+    }
+
 
     function closeProductModal() {
         // Hide modal

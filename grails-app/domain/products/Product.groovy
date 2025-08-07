@@ -5,13 +5,13 @@ import gorm.logical.delete.LogicalDelete
 class Product implements Serializable, LogicalDelete<Product> {
 
     String name
-    String description
+    String description //short Description
     double price
     String weight
     int stock
     String image = "NA"
     String ingredients
-    String benefits
+    String benefits //description
     Date mfgDate
     Date expiry
     int offer = 0
