@@ -10,6 +10,7 @@ class Order implements Serializable, LogicalDelete<Order> {
     Product product
     int amount
     String orderId
+    String status
 
     Date dateCreated
     Date lastUpdated

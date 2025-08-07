@@ -58,5 +58,8 @@ class UrlMappings {
         "/verify/otp/register"(controller: "auth", action: "verifyOtpRegister")
 
         "/api/media/$path**"(controller: "fileLocation", action: "index")
+
+        //Order
+        "/getorders"(controller: "order",action: "get")
     }
 }

@@ -232,6 +232,7 @@
                                 <!-- Orders will be populated here -->
                                 </tbody>
                             </table>
+                            <div id="ordersPagination" class="flex mt-4 space-x-2" style="justify-content:flex-end"></div>
                         </div>
                     </div>
                 </div>
@@ -483,7 +484,8 @@
             <!-- isHidden -->
             <div class="mb-6">
                 <label class="inline-flex items-center">
-                    <input type="checkbox" id="productIsHidden" name="isHidden" class="form-checkbox h-5 w-5 text-green-600">
+                    <input type="checkbox" id="productIsHidden" name="isHidden"
+                           class="form-checkbox h-5 w-5 text-green-600">
                     <span class="ml-2 text-gray-700 text-sm">Hide this product from users</span>
                 </label>
             </div>
@@ -505,6 +507,8 @@
 <g:include view="layouts/footer.gsp"/>
 <script>
     let currentAdminTab = 'overview';
+
+    //Products
     fetchProducts()
     // Admin data
     let adminData = {
@@ -604,22 +608,22 @@
         currentAdminTab = tabName;
     }
 
-    function renderAdminOverview() {
-        const recentActivity = document.getElementById('recentActivity');
-        recentActivity.innerHTML = adminData.recentActivity.map(function (activity) {
-            return '<div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">' +
-                '<div class="text-2xl">' +
-                (activity.type === 'order' ? '📦' :
-                    activity.type === 'payment' ? '💳' :
-                        activity.type === 'product' ? '🌿' : '👥') +
-                '</div>' +
-                '<div class="flex-1">' +
-                '<p class="text-sm text-gray-900">' + activity.message + '</p>' +
-                '<p class="text-xs text-gray-500">' + activity.time + '</p>' +
-                '</div>' +
-                '</div>';
-        }).join('');
-    }
+    // function renderAdminOverview() {
+    //     const recentActivity = document.getElementById('recentActivity');
+    //     recentActivity.innerHTML = adminData.recentActivity.map(function (activity) {
+    //         return '<div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">' +
+    //             '<div class="text-2xl">' +
+    //             (activity.type === 'order' ? '📦' :
+    //                 activity.type === 'payment' ? '💳' :
+    //                     activity.type === 'product' ? '🌿' : '👥') +
+    //             '</div>' +
+    //             '<div class="flex-1">' +
+    //             '<p class="text-sm text-gray-900">' + activity.message + '</p>' +
+    //             '<p class="text-xs text-gray-500">' + activity.time + '</p>' +
+    //             '</div>' +
+    //             '</div>';
+    //     }).join('');
+    // }
 
     let products = [];
 
@@ -734,9 +738,6 @@
 
     });
 
-    function closeProductModal() {
-        document.getElementById('productModal').classList.add('hidden');
-    }
 
     function openAddProductModal() {
         closeProductModal(); // clears previous data
@@ -763,20 +764,6 @@
             }
         });
     }
-
-
-    // Show notification
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'fixed top-20 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
-
 
     function editProduct(id) {
         const product = products.find(p => p.id === id);
@@ -815,7 +802,6 @@
         return parts[2] + '-' + parts[1] + '-' + parts[0]; // yyyy-MM-dd
     }
 
-
     function closeProductModal() {
         // Hide modal
         $('#productModal').addClass('hidden');
@@ -826,7 +812,6 @@
         $('#previewImg').hide().attr('src', '');
         $('#modalTitle').text('Add New Product');
     }
-
 
     function renderOrdersTable() {
         const ordersTable = document.getElementById('ordersTable');
@@ -848,29 +833,105 @@
         }).join('');
     }
 
-    function renderPaymentsTable() {
-        const paymentsTable = document.getElementById('paymentsTable');
-        paymentsTable.innerHTML = adminData.payments.map(function (payment) {
+    // function renderPaymentsTable() {
+    //     const paymentsTable = document.getElementById('paymentsTable');
+    //     paymentsTable.innerHTML = adminData.payments.map(function (payment) {
+    //         return '<tr>' +
+    //             '<td class="px-2 md:px-4 py-3 font-medium text-gray-900 text-sm md:text-base">' + payment.id + '</td>' +
+    //             '<td class="px-2 md:px-4 py-3 text-gray-900 text-sm md:text-base">' + payment.customer + '</td>' +
+    //             '<td class="px-2 md:px-4 py-3 font-semibold text-green-600 text-sm md:text-base">₹' + payment.amount + '</td>' +
+    //             '<td class="hidden sm:table-cell px-2 md:px-4 py-3">' +
+    //             '<span class="px-1 md:px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">' +
+    //             payment.method +
+    //             '</span>' +
+    //             '</td>' +
+    //             '<td class="px-2 md:px-4 py-3">' +
+    //             '<span class="px-1 md:px-2 py-1 text-xs rounded-full ' +
+    //             (payment.status === 'Success' ? 'bg-green-100 text-green-800' :
+    //                 payment.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+    //                     'bg-red-100 text-red-800') +
+    //             '">' + payment.status + '</span>' +
+    //             '</td>' +
+    //             '<td class="hidden lg:table-cell px-2 md:px-4 py-3 text-gray-600 text-xs md:text-sm">' + payment.date + '</td>' +
+    //             '</tr>';
+    //     }).join('');
+    // }
+</script>
+
+<script>
+    //Orders
+    // Fetch on page load
+    fetchOrders();
+    let orders = [];
+    var currentOrderPage = 1;
+    var orderPageSize = 10;
+
+    function fetchOrders(page = 1) {
+        currentOrderPage = page;
+        const start = (page - 1) * orderPageSize;
+
+        fetch('/getorders?draw=1&start=' + start + '&length=' + orderPageSize)
+            .then(response => response.json())
+            .then(data => {
+                orders = data.data;
+                renderOrdersTable();
+                renderOrderPaginationControls(data.recordsTotal);
+            })
+            .catch(error => {
+                console.error('Error fetching orders:', error);
+                document.getElementById('ordersTable').innerHTML =
+                    '<tr><td colspan="6" class="text-center py-4 text-red-600">No orders available.</td></tr>';
+            });
+    }
+
+    function renderOrdersTable() {
+        const ordersTable = document.getElementById('ordersTable');
+        ordersTable.innerHTML = orders.map(function (order) {
             return '<tr>' +
-                '<td class="px-2 md:px-4 py-3 font-medium text-gray-900 text-sm md:text-base">' + payment.id + '</td>' +
-                '<td class="px-2 md:px-4 py-3 text-gray-900 text-sm md:text-base">' + payment.customer + '</td>' +
-                '<td class="px-2 md:px-4 py-3 font-semibold text-green-600 text-sm md:text-base">₹' + payment.amount + '</td>' +
-                '<td class="hidden sm:table-cell px-2 md:px-4 py-3">' +
-                '<span class="px-1 md:px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">' +
-                payment.method +
-                '</span>' +
-                '</td>' +
+                '<td class="px-2 md:px-4 py-3 font-medium text-gray-900 text-sm md:text-base">' + order.orderId + '</td>' +
+                '<td class="px-2 md:px-4 py-3 text-gray-900 text-sm md:text-base">' + (order.username || 'NA') + '</td>' +
+                '<td class="hidden lg:table-cell px-2 md:px-4 py-3 text-gray-600 text-sm">' + (order.productdescription || 'NA') + '</td>' +
+                '<td class="px-2 md:px-4 py-3 font-semibold text-green-600 text-sm md:text-base">' + order.amount + '</td>' +
                 '<td class="px-2 md:px-4 py-3">' +
                 '<span class="px-1 md:px-2 py-1 text-xs rounded-full ' +
-                (payment.status === 'Success' ? 'bg-green-100 text-green-800' :
-                    payment.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800') +
-                '">' + payment.status + '</span>' +
+                (order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
+                    order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
+                        order.status === 'Processing' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800') +
+                '">' + order.status + '</span>' +
                 '</td>' +
-                '<td class="hidden lg:table-cell px-2 md:px-4 py-3 text-gray-600 text-xs md:text-sm">' + payment.date + '</td>' +
+                '<td class="hidden sm:table-cell px-2 md:px-4 py-3">' + formatOrderDate(order.dateCreated) + '</td>' +
                 '</tr>';
         }).join('');
     }
+
+    function formatOrderDate(dateStr) {
+        if (!dateStr) return 'NA';
+        const parts = dateStr.split(' ')[0].split('/');
+        return parts.length === 3 ? parts[1] + '/' + parts[0] + '/' + parts[2] : dateStr;
+    }
+
+    function renderOrderPaginationControls(totalRecords) {
+        const totalPages = Math.ceil(totalRecords / orderPageSize);
+        const container = document.getElementById('ordersPagination');
+        container.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        let html = '';
+        html += '<button ' + (currentOrderPage === 1 ? 'disabled' : '') +
+            ' onclick="fetchOrders(' + (currentOrderPage - 1) + ')" class="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300">Previous</button>';
+
+        for (let i = 1; i <= totalPages; i++) {
+            html += '<button onclick="fetchOrders(' + i + ')" class="px-3 py-1 mx-1 rounded ' +
+                (i === currentOrderPage ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300') + '">' + i + '</button>';
+        }
+
+        html += '<button ' + (currentOrderPage === totalPages ? 'disabled' : '') +
+            ' onclick="fetchOrders(' + (currentOrderPage + 1) + ')" class="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300">Next</button>';
+
+        container.innerHTML = html;
+    }
 </script>
+
 </body>
 </html>
