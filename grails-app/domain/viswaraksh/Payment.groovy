@@ -1,10 +1,18 @@
 package viswaraksh
 
 import gorm.logical.delete.LogicalDelete
+import order.Order
+import products.Product
 
 class Payment implements Serializable, LogicalDelete<Payment> {
 
-    String name
+    Order order
+    User user
+    Product product
+    int amount
+    String method
+    String status
+    String transactionId
 
     Date dateCreated
     Date lastUpdated
@@ -15,7 +23,13 @@ class Payment implements Serializable, LogicalDelete<Payment> {
     static mapWith = "mongo"
 
     static constraints = {
-        name nullable: true
+        status nullable: true
+        user nullable: true
+        order nullable: true
+        product nullable: true
+        transactionId nullable: true
+        amount nullable: true
+        method nullable: true
 
     }
 
