@@ -750,7 +750,7 @@
         $('#productStock').val(product.stock);
         $('#productDescription').val(product.description);
         $('#productIngredients').val(product.ingredients);
-        $('#productBenefits').val((product.benefits).join('\n')); // convert array to text
+        $('#productBenefits').val(product.benefits); // convert array to text
         $('#productMfgDate').val(product.mfgDate);  // Ensure backend returns yyyy-mm-dd
         $('#productExpiry').val(product.expiry);
         $('#productOffer').val(product.offer);
