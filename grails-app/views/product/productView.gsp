@@ -64,7 +64,11 @@
         html += '<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">';
         html += '<div class="space-y-4">';
         html += '<div class="relative">';
-        html += '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="w-full h-96 object-cover rounded-xl shadow-lg" loading="lazy" ';
+
+        const imageSrc = product.image ? 'api/media/product_image/' + product.image : 'https://placehold.co/400';
+        const imageAlt = product.name || 'Product image not available';
+
+        html += '<img src="' + imageSrc + '" alt="' + imageAlt + '" class="w-full h-96 object-cover rounded-xl shadow-lg" loading="lazy" ';
         html += 'onerror="this.src=\'https://placehold.co/400\'; this.alt=\'Product image not available\';">';
 
         if (product.offer > 0) {
@@ -74,40 +78,39 @@
         html += '</div>'; // close .relative
         html += '</div>'; // close left side column
 
-        html += '<div class="space-y-6">';
+        // Made this section scrollable with max height and overflow
+        html += '<div class="space-y-6 <!--max-h-96 overflow-y-auto pr-2-->">';
         html += '<div>';
-        html += '<h1 class="text-3xl font-bold text-gray-900 mb-2">' + product.name + '</h1>';
-        html += '<p class="text-gray-600 text-lg">' + product.description + '</p>';
+        html += '<h1 class="text-3xl font-bold text-gray-900 mb-2">' + (product.name || 'Not Available') + '</h1>';
+        html += '<p class="text-gray-600 text-lg">' + (product.description || 'Not Available') + '</p>';
         html += '</div>';
 
         html += '<div class="flex items-center space-x-4">';
-        if (product.offer > 0) {
+        if (product.offer > 0 && product.price) {
             var discountedPrice = Math.round(product.price * (1 - product.offer / 100));
             html += '<span class="text-3xl font-bold text-green-600">₹' + discountedPrice + '</span>';
             html += '<span class="text-xl text-gray-500 line-through">₹' + product.price + '</span>';
             html += '<span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-semibold">' + product.offer + '% OFF</span>';
         } else {
-            html += '<span class="text-3xl font-bold text-green-600">₹' + product.price + '</span>';
+            html += '<span class="text-3xl font-bold text-green-600">₹' + (product.price || 'Not Available') + '</span>';
         }
         html += '</div>';
 
         html += '<div class="flex items-center space-x-4 text-sm text-gray-600">';
-        html += '<span><strong>Weight:</strong> ' + product.weight + '</span>';
-        html += '<span><strong>Stock:</strong> ' + product.stock + ' Available</span>';
+        html += '<span><strong>Weight:</strong> ' + (product.weight || 'Not Available') + '</span>';
+        html += '<span><strong>Stock:</strong> ' + (product.stock || 'Not Available') + ' Available</span>';
         html += '</div>';
 
-
         html += '<div class="flex space-x-4">'
-        html += '<button onclick="addToCart(' + product.id + ');" class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">Add to Cart</button>'
-        html += '<button onclick="addToCart(' + product.id + '); window.location.href=\'' + redirectUrl + '\'" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">Buy Now</button>'
+        html += '<button onclick="addToCart(' + (product.id || 0) + ');" class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">Add to Cart</button>'
+        html += '<button onclick="addToCart(' + (product.id || 0) + '); window.location.href=\'' + (typeof redirectUrl !== 'undefined' ? redirectUrl : '#') + '\'" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:blue-700 transition duration-300">Buy Now</button>'
         html += '</div>'
 
-        // ✅ Benefits Section (Fixed to parse JSON string)
+        // ✅ Benefits Section
         html += '<div class="bg-white border rounded-xl p-6">';
         html += '<h5 class="font-semibold text-gray-900 mb-3">Description:</h5>';
         html += '<ul class="space-y-2">';
-        html += '<li class="text-gray-700">' + product.benefits + '</li>';
-
+        html += '<li class="text-gray-700">' + (product.benefits || 'Not Available') + '</li>';
         html += '</ul>';
         html += '</div>';
 
@@ -115,25 +118,24 @@
         html += '<div class="bg-white border rounded-xl p-6">';
         html += '<h5 class="font-semibold text-gray-900 mb-3">Product Information:</h5>';
         html += '<div class="space-y-2 text-sm">';
-        html += '<p><strong>Manufacturing Date:</strong> ' + product.mfgDate.split(' ')[0] + '</p>';
-        html += '<p><strong>Expiry:</strong> ' + product.expiry.split(' ')[0] + '</p>';
-
-        html += '<p><strong>MRP:</strong> ₹' + product.price + '.00</p>';
+        html += '<p><strong>Manufacturing Date:</strong> ' + (product.mfgDate ? product.mfgDate.split(' ')[0] : 'Not Available') + '</p>';
+        html += '<p><strong>Expiry:</strong> ' + (product.expiry ? product.expiry.split(' ')[0] : 'Not Available') + '</p>';
+        html += '<p><strong>MRP:</strong> ₹' + (product.price || 'Not Available') + '.00</p>';
         html += '</div>';
         html += '</div>';
 
         // ✅ Ingredients
         html += '<div class="bg-white border rounded-xl p-6">';
         html += '<h5 class="font-semibold text-blue-900 mb-3">Ingredients:</h5>';
-        html += '<p class="text-blue-800 text-sm">' + product.ingredients + '</p>';
+        html += '<p class="text-blue-800 text-sm">' + (product.ingredients || 'Not Available') + '</p>';
         html += '</div>';
 
-        html += '</div>'; // close right column
+        html += '</div>'; // close right column (now scrollable)
         html += '</div>'; // close grid
 
         productDetailContent.innerHTML = html;
-        // showPage('productDetail');
     }
+
 
 
     // Add to cart

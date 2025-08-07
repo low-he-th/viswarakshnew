@@ -43,7 +43,7 @@
                         var html = '<p>No Product available</p>';
                         $('#productGrid').html(html); // Replace with your actual container ID
                     } else {
-                        products.push(response);
+                        products.push(...response);
                         renderProducts(response);
                         renderPagination();
                     }

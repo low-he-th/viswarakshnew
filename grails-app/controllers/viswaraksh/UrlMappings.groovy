@@ -41,6 +41,13 @@ class UrlMappings {
         "/productview"(controller: "product", action: "productView")
         "/get/product/view"(controller: "product", action: "getProductView")
 
+        //add to cart
+        "/addToCart"(controller: "payment", action: "addToCart")
+        "/addToCart/increment"(controller: "payment", action: "addToCartIncrement")
+        "/addToCart/decrement"(controller: "payment", action: "addToCartDecrement")
+        "/addToCart/remove"(controller: "payment", action: "addToCartRemove")
+
+
 
 
         //Payment
@@ -59,9 +66,12 @@ class UrlMappings {
         "/get/otp/register"(controller: "auth", action: "getOtpRegister")
         "/verify/otp/register"(controller: "auth", action: "verifyOtpRegister")
 
-        "/api/media/$path**"(controller: "fileLocation", action: "index")
 
         //Order
         "/getorders"(controller: "order",action: "get")
+
+
+        "/api/media/$path**"(controller: "fileLocation", action: "index")
+
     }
 }

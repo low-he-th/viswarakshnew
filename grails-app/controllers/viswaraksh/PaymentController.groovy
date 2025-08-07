@@ -9,4 +9,24 @@ class PaymentController {
 
     }
 
+
+    def addToCart(){
+
+    }
+
+
+    def addToCartIncrement(){
+
+    }
+
+    def addToCartDecrement(){
+
+    }
+
+    def addToCartRemove(){
+
+    }
+
+
+
 }

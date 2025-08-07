@@ -19,14 +19,24 @@
             </nav>
 
             <div class="flex items-center space-x-4">
+                <%@ page import="java.text.SimpleDateFormat" %>
+
                 <%
+
                     def userId = session.getAttribute('userId')
                     def name = session.getAttribute('name') ?: 'User'
                     def mobile = session.getAttribute('mobile') ?: 'NA'
                     def email = session.getAttribute('email') ?: 'NA'
-                    def dateCreated = session.getAttribute('dateCreated') ?: 'NA'
+                    def rawDate = session.getAttribute('dateCreated')
                     def address = session.getAttribute('address') ?: 'NA'
+
+                    def dateCreated = 'NA'
+                    if (rawDate instanceof Date) {
+                        def sdf = new SimpleDateFormat("E MMM dd yyyy")
+                        dateCreated = sdf.format(rawDate)
+                    }
                 %>
+
 
                 <g:if test="${userId}">
                     <div class="relative inline-block text-left">
@@ -73,20 +83,20 @@
 
                                             <p class="text-sm text-green-600 font-medium">Member</p>
 
-                                            <p class="text-xs text-gray-500 mt-1">${dateCreated}</p>
+                                            <p class="text-xs text-gray-500 mt-1">Since ${dateCreated}</p>
                                         </div>
 
                                         <div>
 
-                                            <button onclick="editProfile()"
-                                                    class="p-2 text-gray-400 hover:text-gray-600 hover:bg-white rounded-lg transition duration-200">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                                </svg>
-                                            </button>
+%{--                                            <button onclick="editProfile()"--}%
+%{--                                                    class="p-2 text-gray-400 hover:text-gray-600 hover:bg-white rounded-lg transition duration-200">--}%
+%{--                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"--}%
+%{--                                                     viewBox="0 0 24 24">--}%
+%{--                                                    <path stroke-linecap="round" stroke-linejoin="round"--}%
+%{--                                                          stroke-width="2"--}%
+%{--                                                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>--}%
+%{--                                                </svg>--}%
+%{--                                            </button>--}%
                                         </div>
                                     </div>
 

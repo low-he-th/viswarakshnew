@@ -7,7 +7,7 @@
 <g:include view="layouts/topBar.gsp"/>
 <g:include view="layouts/sidebar.gsp"/>
 <!-- Payment Page -->
-<div id="paymentPage" class="page">
+<div id="paymentPage" >
     <section class="py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-8">

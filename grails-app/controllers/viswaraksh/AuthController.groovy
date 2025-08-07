@@ -23,6 +23,7 @@ def login(){
                     session.setAttribute("roleName", auth.user.roleName)
                     session.setAttribute("email", auth.user.email)
                     session.setAttribute("mobile", auth.user.mobile)
+                    session.setAttribute("dateCreated", auth.user.dateCreated)
                     session.setAttribute("web", true)
                     session.setMaxInactiveInterval(-1)
 
