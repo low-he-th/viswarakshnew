@@ -3,6 +3,7 @@ package viswaraksh
 import grails.converters.JSON
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.web.json.JSONObject
+import org.springframework.web.multipart.MultipartFile
 import products.Product
 
 import java.text.SimpleDateFormat
@@ -40,6 +41,13 @@ class AdminController {
             if (params.expiry != null) {
                 product.setExpiry(formatter.parse(params.expiry))
             }
+
+            MultipartFile imageFile = params.imageFile
+            if (imageFile && !imageFile.isEmpty()) {
+
+                product.setImage(new UtilsService().uploadImage("product_image", "", imageFile))
+
+            }
             def saved = product.save(flush: true)
             if (saved) {
                 respond saved, formats: ['json'], status: 200
@@ -74,6 +82,10 @@ class AdminController {
                 }
                 if (params.expiry != null) {
                     product.setExpiry(formatter.parse(params.expiry))
+                }
+                MultipartFile imageFile = params.imageFile
+                if (imageFile && !imageFile.isEmpty()) {
+                    product.setImage(new UtilsService().uploadImage("product_image", "", imageFile))
                 }
                 def saved = product.save(flush: true)
                 if (saved) {

@@ -394,7 +394,7 @@
                     <div class="flex-1">
                         <input type="file" id="productImageFile" name="imageFile" accept="image/*" onchange="previewImage(this)"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
-                        <p class="text-xs text-gray-500 mt-1">Upload product image (JPG, PNG, GIF)</p>
+                        <p class="text-xs text-gray-500 mt-1">Upload product image (JPG, PNG)</p>
                     </div>
                 </div>
                 <input type="hidden" id="productImage" name="image" value="">
