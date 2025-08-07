@@ -9,7 +9,7 @@ class ProductController {
 
     def getProduct() {
         try {
-            ArrayList<Product> product = Product.findAllByDeleted(false)
+            ArrayList<Product> product = Product.findAllByDeletedAndIsHidden(false,false)
             respond product, formats: ['json'], status: 200
         } catch (Exception ex) {
             System.err.println("Controller:" + controllerName + ", Method:" + actionName + " Exception:" + ex)

@@ -168,7 +168,7 @@ class AdminController {
                     offer      : product.offer ?: 0,
                     dateCreated: product.dateCreated ?: "NA",
                     lastUpdated: product.lastUpdated ?: "NA",
-
+                    isHidden   : product.isHidden
             ]
         }
 
@@ -184,7 +184,26 @@ class AdminController {
         render jsonResponse as JSON
     }
 
-
+    def hideProduct() {
+        try {
+            def id = params.long('id')
+            def hide = params.boolean('hide')
+            Product product = Product.findById(id)
+            if (product) {
+                product.setIsUpdatable(true)
+                product.setIsHidden(hide)
+                def saved = product.save(flush: true)
+                if (saved) {
+                    respond saved, formats: ['json'], status: 200
+                } else {
+                    response.status = 400
+                }
+            }
+        }
+        catch (Exception ex) {
+            println("Exception " + ex)
+        }
+    }
     def delete() {
         try {
             def id = params.long('id')
