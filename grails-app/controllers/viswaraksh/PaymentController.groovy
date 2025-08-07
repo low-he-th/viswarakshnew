@@ -2,5 +2,11 @@ package viswaraksh
 
 class PaymentController {
 
-    def payment() { }
+    def payment() {
+        String userId = session.getAttribute("userId")
+
+            render(view: "payment", model: [userId: userId])
+
+    }
+
 }

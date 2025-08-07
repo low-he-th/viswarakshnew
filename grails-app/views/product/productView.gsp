@@ -11,8 +11,8 @@
     <section class="py-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-6">
-                <button onclick="window.location.href='userproduct'" class="text-green-600 hover:text-green-800 font-medium">← Back to
-                Products
+                <button onclick="window.location.href='userproduct'" class="text-green-600 hover:text-green-800 font-medium">
+                    ← Back to Products
                 </button>
             </div>
 
@@ -24,7 +24,14 @@
 </div>
 
 <g:include view="layouts/footer.gsp"/>
+<%
+    def userId = session.getAttribute('userId')
+
+%>
 <script>
+    var userId = '${userId ?: ''}';
+    var redirectUrl = userId ? 'payment' : 'login'
+
     $(document).ready(function () {
         getProducts();
 
@@ -37,6 +44,7 @@
                     productId: ${productId} // Make sure 'productId' is defined above
                 },
                 success: function (response) {
+                    products.push(response);
                     viewProductDetail(response)
                 },
                 error: function () {
@@ -45,7 +53,8 @@
             });
         }
     });
-
+    const products =[]
+    let cart = [];
     function viewProductDetail(product) {
         if (!product) return;
 
@@ -55,7 +64,7 @@
         html += '<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">';
         html += '<div class="space-y-4">';
         html += '<div class="relative">';
-        html += '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="w-full h-96 object-cover rounded-xl shadow-lg" ';
+        html += '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="w-full h-96 object-cover rounded-xl shadow-lg" loading="lazy" ';
         html += 'onerror="this.src=\'https://placehold.co/400\'; this.alt=\'Product image not available\';">';
 
         if (product.offer > 0) {
@@ -87,10 +96,11 @@
         html += '<span><strong>Stock:</strong> ' + product.stock + ' Available</span>';
         html += '</div>';
 
-        html += '<div class="flex space-x-4">';
-        html += '<button onclick="addToCart(' + product.id + '); showPage(\'products\')" class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">Add to Cart</button>';
-        html += '<button onclick="addToCart(' + product.id + '); proceedToPayment()" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">Buy Now</button>';
-        html += '</div>';
+
+        html += '<div class="flex space-x-4">'
+        html += '<button onclick="addToCart(' + product.id + ');" class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">Add to Cart</button>'
+        html += '<button onclick="addToCart(' + product.id + '); window.location.href=\'' + redirectUrl + '\'" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">Buy Now</button>'
+        html += '</div>'
 
         // ✅ Benefits Section (Fixed to parse JSON string)
         html += '<div class="bg-white border rounded-xl p-6">';
@@ -126,7 +136,86 @@
     }
 
 
+    // Add to cart
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
+        const existingItem = cart.find(item => item.id === productId);
 
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({...product, quantity: 1});
+        }
+
+        updateCartUI();
+        showCartNotification();
+    }
+
+    // Update cart UI
+    function updateCartUI() {
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        cartCount.textContent = totalItems;
+        cartTotal.textContent = '₹' + totalPrice.toFixed(2);
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p class="text-gray-500 text-center">Your cart is empty</p>';
+        } else {
+            var html = '';
+            cart.forEach(function(item) {
+                html += '<div class="flex items-center justify-between py-4 border-b">';
+                html += '<div class="flex items-center space-x-3">';
+                html += '<img src="api/media/product_image/' + item.image + '" alt="' + item.name + '" class="w-16 h-16 object-cover rounded-lg" loading="lazy" onerror="this.src=\'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMiAzMkMzNS4zMTM3IDMyIDM4IDM1LjMxMzcgMzggMzhDMzggNDAuNjg2MyAzNS4zMTM3IDQzIDMyIDQzQzI4LjY4NjMgNDMgMjYgNDAuNjg2MyAyNiAzOEMyNiAzNS4zMTM3IDI4LjY4NjMgMzIgMzIgMzJaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=\'; this.alt=\'Product image not available\';">';
+                html += '<div>';
+                html += '<h5 class="font-medium">' + item.name + '</h5>';
+                html += '<p class="text-sm text-gray-600">₹' + item.price + ' (' + item.weight + ')</p>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="flex items-center space-x-2">';
+                html += '<button onclick="updateQuantity(' + item.id + ', -1)" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">-</button>';
+                html += '<span class="w-8 text-center">' + item.quantity + '</span>';
+                html += '<button onclick="updateQuantity(' + item.id + ', 1)" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">+</button>';
+                html += '<button onclick="removeFromCart(' + item.id + ')" class="ml-2 text-red-500 hover:text-red-700">🗑️</button>';
+                html += '</div>';
+                html += '</div>';
+            });
+            cartItems.innerHTML = html;
+        }
+    }
+
+    // Show cart notification
+    function showCartNotification() {
+        const cartCount = document.getElementById('cartCount');
+        cartCount.classList.add('cart-badge');
+        setTimeout(() => {
+            cartCount.classList.remove('cart-badge');
+        }, 300);
+    }
+
+
+    // Remove from cart
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.id !== productId);
+        updateCartUI();
+    }
+
+    // Update quantity
+    function updateQuantity(productId, change) {
+        const item = cart.find(item => item.id === productId);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                updateCartUI();
+            }
+        }
+    }
 </script>
 </body>
 </html>

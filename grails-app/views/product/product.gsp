@@ -43,6 +43,7 @@
                         var html = '<p>No Product available</p>';
                         $('#productGrid').html(html); // Replace with your actual container ID
                     } else {
+                        products.push(response);
                         renderProducts(response);
                         renderPagination();
                     }
@@ -74,7 +75,7 @@
         productGrid.innerHTML = currentProducts.map(function(product) {
             var html = '<div class="product-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">';
             html += '<div class="relative">';
-            html += '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="product-image" onerror="this.onerror=null; this.src=\'https://placehold.co/400\'; this.alt=\'Product image not available\';">';
+            html += '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="product-image" loading="lazy" onerror="this.onerror=null; this.src=\'https://placehold.co/400\'; this.alt=\'Product image not available\';">';
             if (product.offer > 0) {
                 html += '<div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">' + product.offer + '% OFF</div>';
             }
@@ -174,7 +175,7 @@
             cart.forEach(function(item) {
                 html += '<div class="flex items-center justify-between py-4 border-b">';
                 html += '<div class="flex items-center space-x-3">';
-                html += '<img src="' + item.image + '" alt="' + item.name + '" class="w-16 h-16 object-cover rounded-lg" onerror="this.src=\'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMiAzMkMzNS4zMTM3IDMyIDM4IDM1LjMxMzcgMzggMzhDMzggNDAuNjg2MyAzNS4zMTM3IDQzIDMyIDQzQzI4LjY4NjMgNDMgMjYgNDAuNjg2MyAyNiAzOEMyNiAzNS4zMTM3IDI4LjY4NjMgMzIgMzIgMzJaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=\'; this.alt=\'Product image not available\';">';
+                html += '<img src="api/media/product_image/' + item.image + '" alt="' + item.name + '" class="w-16 h-16 object-cover rounded-lg" loading="lazy" onerror="this.src=\'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMiAzMkMzNS4zMTM3IDMyIDM4IDM1LjMxMzcgMzggMzhDMzggNDAuNjg2MyAzNS4zMTM3IDQzIDMyIDQzQzI4LjY4NjMgNDMgMjYgNDAuNjg2MyAyNiAzOEMyNiAzNS4zMTM3IDI4LjY4NjMgMzIgMzIgMzJaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=\'; this.alt=\'Product image not available\';">';
                 html += '<div>';
                 html += '<h5 class="font-medium">' + item.name + '</h5>';
                 html += '<p class="text-sm text-gray-600">₹' + item.price + ' (' + item.weight + ')</p>';

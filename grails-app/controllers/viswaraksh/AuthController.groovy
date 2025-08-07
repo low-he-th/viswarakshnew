@@ -40,6 +40,11 @@ def login(){
         }
     }
 
+    def logout(){
+        session.invalidate()
+        respond null, status: 200, formats: ['json']
+
+    }
 
     def verifyOtp() {
         try {
@@ -122,6 +127,8 @@ def login(){
                     session.setAttribute("roleName", auth.user.roleName)
                     session.setAttribute("email", auth.user.email)
                     session.setAttribute("mobile", auth.user.mobile)
+                    session.setAttribute("dateCreated", auth.user.dateCreated)
+                    session.setAttribute("address", auth.user.address)
                     session.setAttribute("web", true)
                     session.setMaxInactiveInterval(-1)
 

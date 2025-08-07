@@ -16,10 +16,16 @@
             <span class="text-lg font-semibold">Total: </span>
             <span id="cartTotal" class="text-lg font-bold text-green-600">₹0.00</span>
         </div>
-        <button onclick="proceedToPayment()"
+        <%
+            def userId = session.getAttribute('userId')
+            def redirectUrl = userId ? 'payment' : 'login'
+        %>
+
+        <button onclick="window.location.href='${redirectUrl}'"
                 class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
             Proceed to Payment
         </button>
+
     </div>
 </div>
 <!-- carts Overlay -->

@@ -46,6 +46,8 @@ class UrlMappings {
         //Payment
         "/payment"(controller: "payment", action: "payment")
 
+        //logout
+        "/logout"(controller: "auth", action: "logout")
 
         //login
         "/login"(controller: "auth", action: "login")

@@ -89,6 +89,7 @@
 <g:include view="layouts/footer.gsp"/>
 
 <script>
+    showNotification("Please Register..");
     function showRegisterDetailsStep() {
         document.getElementById('registerDetailsStep').classList.remove('hidden');
         document.getElementById('registerOTPStep').classList.add('hidden');
@@ -125,17 +126,7 @@
     }
 
 
-    // Show notification
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'fixed top-20 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-        notification.textContent = message;
-        document.body.appendChild(notification);
 
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
 
 
     $(document).ready(function () {
@@ -191,7 +182,7 @@
                 data: { registerOTP: registerOTP,registerPhone:registerPhone}, // convert to JSON string
                 success: function (response) {
 
-                        showNotification('Login successful!');
+                        showNotification('Register successful!');
                         window.location.href='/'
 
                 },

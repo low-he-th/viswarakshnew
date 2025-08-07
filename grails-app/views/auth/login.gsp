@@ -77,7 +77,7 @@
 
 <g:include view="layouts/footer.gsp"/>
 <script>
-
+    showNotification("Please Login..");
 
     function showLoginPhoneStep() {
         document.getElementById('loginPhoneStep').classList.remove('hidden');
@@ -107,17 +107,6 @@
     }
 
 
-    // Show notification
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'fixed top-20 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
 
     $(document).ready(function () {
         $('#loginForm').on("submit", function (e) {

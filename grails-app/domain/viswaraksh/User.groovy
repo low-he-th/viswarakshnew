@@ -9,6 +9,7 @@ class User  implements Serializable, LogicalDelete<User> {
     String mobile
     String roleName
     String photo
+    String address
 
     Date dateCreated
     Date lastUpdated
@@ -16,10 +17,10 @@ class User  implements Serializable, LogicalDelete<User> {
     static constraints = {
         name nullable: true
         email nullable: true
-//        mobile nullable: true, unique: true
-        mobile nullable: true
+        mobile nullable: true, unique: true
         roleName nullable: true
         photo nullable: true
+        address nullable: true
     }
 
     static mapWith = "mongo"
