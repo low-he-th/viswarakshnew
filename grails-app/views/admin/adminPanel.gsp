@@ -394,7 +394,7 @@
                     <div class="flex-1">
                         <input type="file" id="productImageFile" name="imageFile" accept="image/*" onchange="previewImage(this)"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
-                        <p class="text-xs text-gray-500 mt-1">Upload product image (JPG, PNG, GIF)</p>
+                        <p class="text-xs text-gray-500 mt-1">Upload product image (JPG, PNG)</p>
                     </div>
                 </div>
                 <input type="hidden" id="productImage" name="image" value="">
@@ -473,13 +473,7 @@
                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
             </div>
 
-            <!-- isHidden -->
-            <div class="mb-6">
-                <label class="inline-flex items-center">
-                    <input type="checkbox" id="productIsHidden" name="isHidden" class="form-checkbox h-5 w-5 text-green-600">
-                    <span class="ml-2 text-gray-700 text-sm">Hide this product from users</span>
-                </label>
-            </div>
+
 
             <!-- Submit Buttons -->
             <div class="flex justify-end space-x-4">
@@ -626,7 +620,7 @@
             .catch(error => {
                 console.error('Error fetching products:', error);
                 document.getElementById('productsTable').innerHTML =
-                    '<tr><td colspan="5" class="text-center py-4 text-red-600">Failed to load products.</td></tr>';
+                    '<tr><td colspan="5" class="text-center py-4 text-red-600">No products Available.</td></tr>';
             });
     }
 
@@ -636,10 +630,10 @@
             return '<tr>' +
                 '<td class="px-2 md:px-4 py-3">' +
                 '<div class="flex items-center space-x-2 md:space-x-3">' +
-                '<img src="' + product.image + '" alt="' + product.name + '" class="w-16 h-16 object-cover rounded-lg" />' +
+                '<img src="api/media/product_image/' + product.image + '" alt="' + product.name + '" class="w-16 h-16 object-cover rounded-lg" />' +
                 '<div class="min-w-0 flex-1">' +
                 '<p class="font-medium text-gray-900 text-sm md:text-base truncate">' + product.name + '</p>' +
-                '<p class="text-xs md:text-sm text-gray-600 hidden sm:block">' + product.description + '</p>' +
+                // '<p class="text-xs md:text-sm text-gray-600 hidden sm:block">' + product.description + '</p>' +
                 '</div>' +
                 '</div>' +
                 '</td>' +
@@ -754,7 +748,6 @@
         $('#productMfgDate').val(product.mfgDate);  // Ensure backend returns yyyy-mm-dd
         $('#productExpiry').val(product.expiry);
         $('#productOffer').val(product.offer);
-        $('#productIsHidden').prop('checked', product.isHidden);
 
         // Set preview image
         if (product.image) {

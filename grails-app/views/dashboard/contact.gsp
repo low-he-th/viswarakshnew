@@ -143,28 +143,31 @@
         }, 3000);
     }
     $(document).ready(function () {
-        $('#handleContactForm').on("submit", function (e) {
-            e.preventDefault(); // prevent page reload
+        $(document).ready(function () {
+            $('#handleContactForm').on("submit", function (e) {
+                e.preventDefault(); // prevent page reload
 
+                let form = this; // reference to the form element
+                let formData = new FormData(form); // create FormData object from the form
 
-
-            $.ajax({
-                url: "send/message/contact",
-                method: "POST",
-                dataType:"json",
-                data:formDate, // send as form data
-                success: function (response) {
-
-
-                    showNotification('Message sent!');
-
-                },
-                error: function () {
-                    showNotification("Message not sent!");
-                }
+                $.ajax({
+                    url: "send/message/contact",
+                    method: "POST",
+                    dataType: "json",
+                    data: formData,
+                    processData: false, // required for FormData
+                    contentType: false, // required for FormData
+                    success: function (response) {
+                        showNotification('Message sent!');
+                        form.reset(); // Optional: reset the form on success
+                    },
+                    error: function () {
+                        showNotification("Message not sent!");
+                    }
+                });
             });
-
         });
+
 
     });
 </script>

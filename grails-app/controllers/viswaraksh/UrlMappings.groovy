@@ -21,9 +21,11 @@ class UrlMappings {
 
         // admin dashbaord
         "/admin"(controller: "admin", action: "adminPanel")
-        "/add/product"(controller: "admin", action: "addAndEditProduct")
-        "/delete/product"(controller: "admin", action: "deleteProduct")
-        "/get/product"(controller: "admin", action: "getProduct")
+        "/addproduct"(controller: "admin", action: "add")
+        "/updateproduct"(controller: "admin", action: "update")
+        "/getproducts"(controller: "admin", action: "getProducts")
+        "/deleteproducts"(controller: "admin", action: "delete")
+
 
 
         // About
@@ -34,12 +36,11 @@ class UrlMappings {
         "/send/message/contact"(controller: "dashboard", action: "sendMessageContact")
 
         // User Product
-        "/userproduct"(controller: "product", action: "productPage")
-        "/addproduct"(controller: "product", action: "add")
-        "/updateproduct"(controller: "product", action: "update")
-        "/getproducts"(controller: "product", action: "getProducts")
-        "/deleteproducts"(controller: "product", action: "delete")
-        "/hideproduct"(controller: "product", action: "hideProduct")
+        "/userproduct"(controller: "product", action: "product")
+        "/get/userproduct"(controller: "product", action: "getProduct")
+        "/productview"(controller: "product", action: "productView")
+        "/get/product/view"(controller: "product", action: "getProductView")
+
 
 
         //Payment

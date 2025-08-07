@@ -1,8 +1,12 @@
 package viswaraksh
 
+import grails.converters.JSON
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.web.json.JSONObject
+import org.springframework.web.multipart.MultipartFile
 import products.Product
+
+import java.text.SimpleDateFormat
 
 class AdminController {
 
@@ -16,108 +20,190 @@ class AdminController {
             response.status = 400
         }
     }
-
-    def addAndEditProduct() {
+    def add() {
         try {
-            Product product
-
-            if (params.editId) {
-                product = Product.findById(Long.parseLong(params.editId))
-                product.isUpdatable = true
-            } else {
-                product = new Product()
+            Product product = new Product()
+            product.setName(params.name)
+            product.setDescription(params.desc)
+            def price = params.double("price")
+            product.setPrice(price)
+            product.setWeight(params.weight)
+            product.setIngredients(params.ingredients)
+            product.setBenefits(params.benefits)
+            def offer = params.int("offer")
+            product.setOffer(offer)
+            def stock = params.int("stock")
+            product.setStock(stock)
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
+            if (params.mfgDate != null) {
+                product.setMfgDate(formatter.parse(params.mfgDate))
+            }
+            if (params.expiry != null) {
+                product.setExpiry(formatter.parse(params.expiry))
             }
 
-            // Set all fields from params
-            product.name = params.name?.trim()
-            product.price = params.price?.trim()
-            product.weight = params.weight?.trim()
-            product.image = params.image?.trim()
-            product.description = params.description?.trim()
-            product.benefits = params.benefits?.trim()
-            product.ingredients = params.ingredients?.trim()
-            product.expiry = params.expiry?.trim()
-            product.mfgDate = params.mfgDate?.trim()
-            product.stock = params.stock?.trim()
-            product.offer = params.offer?.trim()
-            product.details = params.details?.trim()
+            MultipartFile imageFile = params.imageFile
+            if (imageFile && !imageFile.isEmpty()) {
 
-            Product products = product.save(flush: true, failOnError: true)
-            if(products) {
-                respond products, formats: ['json'], status: 200
+                product.setImage(new UtilsService().uploadImage("product_image", "", imageFile))
+
             }
-        } catch (Exception ex) {
-            System.err.println("Controller: ${controllerName}, Method: ${actionName} Exception: $ex")
-            log.error("Controller: ${controllerName}, Method: ${actionName} Exception: $ex")
-            response.status = 400
+            def saved = product.save(flush: true)
+            if (saved) {
+                respond saved, formats: ['json'], status: 200
+            }
+        }
+        catch (Exception ex) {
+            println("Exception :" + ex)
         }
     }
 
-    def deleteProduct() {
+    def update() {
         try {
-            Product product = Product.findById(Long.parseLong(params.deleteId))
-            product.isUpdatable = true
-            Product products = product.delete(flush: true)
-            if(!products) {
-                respond products, formats: ['json'],status: 200
-            }
-        } catch (Exception ex) {
-            System.err.println("Controller:" + controllerName + ", Method:" + actionName + " Exception:" + ex)
-            log.error("Controller:" + controllerName + ", Method:" + actionName + " Exception:" + ex)
-            response.status = 400
-        }
-    }
-
-    def getProduct()
-    {
-        try
-        {
-            GrailsParameterMap parameterMap = getParams()
-            String searchTerm = parameterMap.get("search[value]")
-            String orderColumnId = parameterMap.get("order[0][column]")
-            String orderDir = parameterMap.get("order[0][dir]")
-
-            // For sorting
-            String orderColumn = "id"
-            switch (orderColumnId)
-            {
-                case '0':
-                    orderColumn = "id"
-                    break
-            }
-
-            def list
-            def productList = Product.createCriteria()
-
-            list = productList.list(max: params.length, offset: params.start) {
-                if (searchTerm != "")
-                {
-                    or {
-                        ilike('name', "%" + searchTerm + "%")
-
-                    }
+            def id = params.long('id')
+            Product product = Product.findById(id)
+            if (product) {
+                product.setIsUpdatable(true)
+                product.setName(params.name)
+                product.setDescription(params.desc)
+                def price = params.double("price")
+                product.setPrice(price)
+                product.setWeight(params.weight)
+                product.setIngredients(params.ingredients)
+                product.setBenefits(params.benefits)
+                product.setExpiry(params.expiry)
+                def offer = params.int("offer")
+                product.setOffer(offer)
+                def stock = params.int("stock")
+                product.setStock(stock)
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd")
+                if (params.mfgDate != null) {
+                    product.setMfgDate(formatter.parse(params.mfgDate))
                 }
+                if (params.expiry != null) {
+                    product.setExpiry(formatter.parse(params.expiry))
+                }
+                MultipartFile imageFile = params.imageFile
+                if (imageFile && !imageFile.isEmpty()) {
+                    product.setImage(new UtilsService().uploadImage("product_image", "", imageFile))
+                }
+                def saved = product.save(flush: true)
+                if (saved) {
+                    respond saved, formats: ['json'], status: 200
+                }
+            } else {
+                response.status = 400
+            }
+        }
+        catch (Exception ex) {
+            println("Exception :" + ex)
+        }
+    }
 
-                eq('deleted', false)
-                order("id", "desc")
+
+    def getProducts() {
+        GrailsParameterMap parameterMap = getParams()
+        String searchTerm = parameterMap.get("search[value]") ?: ""
+        String orderColumnId = parameterMap.get("order[0][column]") ?: "1"
+        String orderDir = parameterMap.get("order[0][dir]") ?: "desc"
+        int max = parameterMap.int("length") ?: 10
+        int offset = parameterMap.int("start") ?: 0
+        int draw = parameterMap.int("draw") ?: 1
+
+        searchTerm = searchTerm.trim()
+
+        // Determine the order column
+        String orderColumn
+        switch (orderColumnId) {
+            case "1":
+                orderColumn = "id"
+                break
+            case "2":
+                orderColumn = "name"
+                break
+            case "3":
+                orderColumn = "price"
+                break
+            case "4":
+                orderColumn = "stock"
+                break
+            default:
+                orderColumn = "id"
+        }
+
+        def productList
+        def criteria = Product.createCriteria()
+
+        if (searchTerm) {
+            productList = criteria.list(max: max, offset: offset) {
+                or {
+                    ilike("name", "%${searchTerm}%")
+                    ilike("description", "%${searchTerm}%")
+                    ilike("weight", "%${searchTerm}%")
+                }
+                eq("deleted", false)
                 order(orderColumn, orderDir)
             }
-
-
-            def recordsTotal = list.totalCount
-            JSONObject jsonObject = new JSONObject()
-            jsonObject.put("draw", params.draw)
-            jsonObject.put("recordsTotal", recordsTotal)
-            jsonObject.put("recordsFiltered", recordsTotal)
-            jsonObject.put("data", list)
-            respond jsonObject, formats: ['json']
-
+        } else {
+            productList = criteria.list(max: max, offset: offset) {
+                eq("deleted", false)
+                order(orderColumn, orderDir)
+            }
         }
-        catch (Exception ex)
-        {
-            System.err.println("Controller:" + controllerName + ", Method:" + actionName + " Exception:" + ex)
-            log.error("Controller:" + controllerName + ", Method:" + actionName + " Exception:" + ex)
-            response.status = 400
+
+        // Prepare lightweight JSON list to return
+        def productData = productList.collect { product ->
+            [
+                    id         : product.id,
+                    name       : product.name,
+                    description: product.description ?: "NA",
+                    price      : product.price ?: 0,
+                    weight     : product.weight ?: "NA",
+                    stock      : product.stock ?: 0,
+                    image      : product.image ?: "/images/default.png",
+                    ingredients: product.ingredients ?: "NA",
+                    benefits   : product.benefits ?: "NA",
+                    mfgDate    : product.mfgDate ?: "NA",
+                    expiry     : product.expiry ?: "NA",
+                    offer      : product.offer ?: 0,
+                    dateCreated: product.dateCreated ?: "NA",
+                    lastUpdated: product.lastUpdated ?: "NA",
+
+            ]
+        }
+
+
+        // Final JSON response
+        def jsonResponse = [
+                draw           : draw,
+                recordsTotal   : productList.totalCount,
+                recordsFiltered: productList.totalCount,
+                data           : productData
+        ]
+
+        render jsonResponse as JSON
+    }
+
+
+    def delete() {
+        try {
+            def id = params.long('id')
+            Product product = Product.findById(id)
+            if (product) {
+                product.setIsUpdatable(true)
+                def deleted = product.delete(flush: true)
+                if (deleted == null) {
+                    JSONObject jsonObject = new JSONObject()
+                    respond jsonObject, formats: ['json'], status: 200
+                } else {
+                    response.status = 400
+                }
+            }
+        }
+        catch (Exception ex) {
+            println("Exception " + ex)
         }
     }
+
+
 }
