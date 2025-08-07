@@ -636,8 +636,7 @@
             return '<tr>' +
                 '<td class="px-2 md:px-4 py-3">' +
                 '<div class="flex items-center space-x-2 md:space-x-3">' +
-                '<img src="' + product.image + '" alt="' + product.name + '" class="w-16 h-16 object-cover rounded-lg" ' +
-                'onerror="this.src=\'data:image/svg+xml;base64,...\'; this.alt=\'Product image not available\';">' +
+                '<img src="' + product.image + '" alt="' + product.name + '" class="w-16 h-16 object-cover rounded-lg" />' +
                 '<div class="min-w-0 flex-1">' +
                 '<p class="font-medium text-gray-900 text-sm md:text-base truncate">' + product.name + '</p>' +
                 '<p class="text-xs md:text-sm text-gray-600 hidden sm:block">' + product.description + '</p>' +
@@ -703,6 +702,28 @@
         $('#productModal').removeClass('hidden');
     }
 
+    function deleteProduct(id) {
+        $.ajax({
+            url: 'deleteproducts', // or '/product/delete' if it's in a namespaced controller
+            type: 'POST',
+            data: { id: id },
+            success: function (response, status, xhr) {
+                // if (response.status === 200) {
+                    // You can either:
+                    // Option 1: Refresh the full table
+                    showNotification("Product Deleted")
+                    fetchProducts();
+                // } else {
+                //     showNotification("Delete failed")
+                // }
+            },
+            error: function (xhr, status, error) {
+                showNotification("Error while deleting product")
+            }
+        });
+    }
+
+
 
     // Show notification
     function showNotification(message) {
@@ -729,7 +750,7 @@
         $('#productStock').val(product.stock);
         $('#productDescription').val(product.description);
         $('#productIngredients').val(product.ingredients);
-        $('#productBenefits').val((product.benefits || []).join('\n')); // convert array to text
+        $('#productBenefits').val((product.benefits).join('\n')); // convert array to text
         $('#productMfgDate').val(product.mfgDate);  // Ensure backend returns yyyy-mm-dd
         $('#productExpiry').val(product.expiry);
         $('#productOffer').val(product.offer);
